@@ -1,0 +1,62 @@
+.navbar {
+    z-index: 100;
+    background-color: white;
+}
+
+#site-content {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    top: 76px;
+    > div {
+        margin: 1vw;
+    }
+}
+
+#main-content {
+    width: 70vw;
+}
+
+#searchbar {
+    display: flex;
+    width: inherit;
+    > * {
+        height:inherit;
+        margin: 1.25%;
+    }
+    > input{
+        width: 75%;
+    }
+    > button{
+        width: 15%;
+    }
+}
+
+#side-content {
+    width: 30vw;
+}
+
+@media (width < 768px) {
+    #main-content {
+        width: 100vw;
+    }
+    #side-content {
+        display: none !important;
+    }
+}
+
+@media (width < 512px){
+    #searchbar {
+        padding: 1%;
+        > * {
+            margin: 1%;
+        }
+        > input{
+            width: 65%;
+        }
+        > button{
+            width: 25%;
+        }
+    }
+    
+}
