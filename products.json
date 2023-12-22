@@ -1,0 +1,21 @@
+[
+    {
+        "name": "productname",
+        "type": "producttype",
+        "thumbnail": "image",
+        "description": "productdescription",
+        "links": ["productlinks"],
+        "owner": "who created the product",
+        "extras": {}
+    },
+    
+    {
+        "name": "GLUBO",
+        "type": "Appliance",
+        "thumbnail": "image",
+        "description": "This is a GLUBO",
+        "links": ["productlinks"],
+        "owner": "Mr Duck Sphere",
+        "extras": {}
+    }
+]
