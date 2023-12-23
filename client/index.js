@@ -6,7 +6,7 @@ async function loadResults(search){
     console.log(res);
     if(res.ok){
         let results = await res.json();
-        insert = `<div class="row-cols-4">\n`;
+        insert = `<div class="grid">\n`;
         for (let i of results){
             insert +=   `<div class="card product-card">
             <img src="${i.thumbnail}" class="card-img-top" alt="Missing Thumbnail: ${i.name}">
@@ -15,6 +15,9 @@ async function loadResults(search){
             </div>
             </div>  
             `;
+        }
+        for (let i=0;i<4;i++){
+            insert += `<div class="blank-result"></div>`
         }
         insert += "\n</div>";
         main.innerHTML = insert
@@ -32,3 +35,5 @@ input.addEventListener('submit', async function(event){
         alert(e);
     }
 });
+
+main.addEventListener('load', loadResults(""))

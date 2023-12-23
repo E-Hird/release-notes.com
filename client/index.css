@@ -58,5 +58,19 @@
             width: 25%;
         }
     }
-    
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    > * {
+        width: 200px;
+        flex-grow: 1;
+        aspect-ratio: 1;
+        margin: 2.5%;
+    }
+    > .blank-result {
+        height: 0px;
+    }
 }

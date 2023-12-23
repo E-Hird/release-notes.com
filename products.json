@@ -17,5 +17,50 @@
         "links": ["productlinks"],
         "owner": "Mr Duck Sphere",
         "extras": {}
+    },
+    {
+        "name": "GLUBO2",
+        "type": "Appliance",
+        "thumbnail": "image",
+        "description": "This is a GLUBO2, the successor to GLUBO",
+        "links": ["productlinks"],
+        "owner": "Mr Duck Sphere",
+        "extras": {}
+    },
+    {
+        "name": "Cheese",
+        "type": "Food",
+        "thumbnail": "image",
+        "description": "cheeez",
+        "links": ["productlinks"],
+        "owner": "cow",
+        "extras": {}
+    },
+    {
+        "name": "Jonothon Mojon",
+        "type": "Person",
+        "thumbnail": "image",
+        "description": "Just some guy",
+        "links": ["productlinks"],
+        "owner": "Mrs Mojon",
+        "extras": {}
+    },
+    {
+        "name": "Crackers",
+        "type": "Food",
+        "thumbnail": "image",
+        "description": "To go with the cheese",
+        "links": ["productlinks"],
+        "owner": "Bakery",
+        "extras": {}
+    },
+    {
+        "name": "Cow",
+        "type": "Animal",
+        "thumbnail": "image",
+        "description": "Created the cheese",
+        "links": ["productlinks"],
+        "owner": "Older Cow",
+        "extras": {}
     }
 ]
