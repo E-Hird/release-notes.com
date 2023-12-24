@@ -1,7 +1,7 @@
 [
     {
         "name": "productname",
-        "type": "producttype",
+        "tags": ["producttags"],
         "thumbnail": "image",
         "description": "productdescription",
         "links": ["productlinks"],
@@ -11,7 +11,7 @@
     
     {
         "name": "GLUBO",
-        "type": "Appliance",
+        "tags": ["Appliance"],
         "thumbnail": "image",
         "description": "This is a GLUBO",
         "links": ["productlinks"],
@@ -20,7 +20,7 @@
     },
     {
         "name": "GLUBO2",
-        "type": "Appliance",
+        "tags": ["Appliance"],
         "thumbnail": "image",
         "description": "This is a GLUBO2, the successor to GLUBO",
         "links": ["productlinks"],
@@ -29,7 +29,7 @@
     },
     {
         "name": "Cheese",
-        "type": "Food",
+        "tags": ["Food"],
         "thumbnail": "image",
         "description": "cheeez",
         "links": ["productlinks"],
@@ -38,7 +38,7 @@
     },
     {
         "name": "Jonothon Mojon",
-        "type": "Person",
+        "tags": ["Person"],
         "thumbnail": "image",
         "description": "Just some guy",
         "links": ["productlinks"],
@@ -47,7 +47,7 @@
     },
     {
         "name": "Crackers",
-        "type": "Food",
+        "tags": ["Food"],
         "thumbnail": "image",
         "description": "To go with the cheese",
         "links": ["productlinks"],
@@ -56,7 +56,7 @@
     },
     {
         "name": "Cow",
-        "type": "Animal",
+        "tags": ["Animal"],
         "thumbnail": "image",
         "description": "Created the cheese",
         "links": ["productlinks"],
