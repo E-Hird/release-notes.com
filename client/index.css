@@ -34,6 +34,7 @@
 
 #side-content {
     width: 30vw;
+    padding: 0;
 }
 
 @media (width < 768px) {
@@ -72,5 +73,32 @@
     }
     > .blank-result {
         height: 0px;
+    }
+}
+
+.preview {
+    > * {
+        margin-left: 7%;
+    }
+    > .preview-label {
+        color: dimgray;
+        font-size: medium;
+        margin-left: 0 !important;
+    }
+    > .preview-image {
+        width: 90%;
+    }
+    > .preview-description {
+        width: 90%;
+    }
+    > .preview-tags {
+        display: flex;
+        > * {
+            margin-right: 5px;
+        }
+    }
+    > .see-more {
+        margin-left: 0;
+        color: gray;
     }
 }

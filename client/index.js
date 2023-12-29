@@ -35,7 +35,7 @@ async function loadResults(search){
     }
 }
 
-function loadPreview(product){
+async function loadPreview(product){
     console.log("product clicked")
     let ownerIcon = "this is the owner icon"
     let insert = `<div class="preview">
@@ -54,10 +54,11 @@ function loadPreview(product){
     <div class="preview-tags">
     `;
     for (let i of product.tags){
-        insert += `<button type="button" class="btn tag-btn">${i}</button>`;
+        insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`;
     }
     insert += `</div>
-    <button type="button" class="btn">See more</button>`;
+    <a type="button" class="see-more">See more...</button>
+    </div>`;
     side.innerHTML = insert;
 }
 

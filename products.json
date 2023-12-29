@@ -29,7 +29,7 @@
     },
     {
         "name": "Cheese",
-        "tags": ["Food"],
+        "tags": ["Food", "Appliance"],
         "thumbnail": "image",
         "description": "cheeez",
         "links": ["productlinks"],
@@ -56,7 +56,7 @@
     },
     {
         "name": "Cow",
-        "tags": ["Animal"],
+        "tags": ["Animal", "Food"],
         "thumbnail": "image",
         "description": "Created the cheese",
         "links": ["productlinks"],
