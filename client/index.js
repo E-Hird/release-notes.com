@@ -1,14 +1,26 @@
 var main = document.getElementById("results");
+var tagSite = document.getElementById("tags")
 var side = document.getElementById("side-content");
 var results = [];
-var elements = [];
+var products = [];
+var tagButtons = [];
 
-async function loadResults(search){
-    main.innerHTML = `<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">`
-    let res = await fetch(`http://127.0.0.1:8080/products?search=${search}`);
-    console.log(res);
-    if(res.ok){
-        results = await res.json();
+async function loadResults(search, type){
+    main.innerHTML = `<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">`;
+    var searchRes;
+    switch(type){
+        case "name":
+            searchRes = await fetch(`http://127.0.0.1:8080/products?type=name&search=${search}`);
+            break;
+        case "tag":
+            searchRes = await fetch(`http://127.0.0.1:8080/products?type=tags&search=${search}`);
+            break;
+        case "owner":
+            searchRes = await fetch(`http://127.0.0.1:8080/products?type=owner&search=${search}`);
+            break;
+    }
+    if(searchRes.ok){
+        results = await searchRes.json();
         let insert = `<div class="grid">\n`;
         for (let i of results){
             insert +=   `<div class="card product-card">
@@ -24,14 +36,41 @@ async function loadResults(search){
         }
         insert += "\n</div>";
         main.innerHTML = insert;
-        elements = document.getElementsByClassName("product-card");
-        console.log(elements);
-        for (let i=0;i<elements.length;i++){
-            elements[i].addEventListener('click', async function(event){
+        products = document.getElementsByClassName("product-card");
+        for (let i=0;i<products.length;i++){
+            products[i].addEventListener('click', async function(event){
                 event.preventDefault();
                 loadPreview(results[i]);
             });
         }
+    }
+}
+
+async function getTags(){
+    tagSite.innerHTML = `<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">`;
+    let tagRes = await fetch(`http://127.0.0.1:8080/tags`);
+    let tagList = await tagRes.json();
+    let insert = "";
+    console.log(tagRes)
+    console.log(tagList)
+    if (tagRes.ok){
+        for (i of tagList){
+            insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`;
+        }
+    }
+    tagSite.innerHTML = insert;
+
+    tagButtons = document.getElementsByClassName("tag-btn");
+    for (let i=0;i<tagButtons.length;i++){
+        tagButtons[i].addEventListener('click', async function(event){
+            event.preventDefault();
+            try {
+                let tag = tagButtons[i].innerHTML
+                loadResults(tag, "tag");
+            } catch(e) {
+                alert(e)
+            }
+        });
     }
 }
 
@@ -60,6 +99,19 @@ async function loadPreview(product){
     <a type="button" class="see-more">See more...</button>
     </div>`;
     side.innerHTML = insert;
+
+    tagButtons = document.getElementsByClassName("tag-btn");
+    for (let i=0;i<tagButtons.length;i++){
+        tagButtons[i].addEventListener('click', async function(event){
+            event.preventDefault();
+            try {
+                let tag = tagButtons[i].innerHTML
+                loadResults(tag, "tag");
+            } catch(e) {
+                alert(e)
+            }
+        });
+    }
 }
 
 const input = document.getElementById("searchbar");
@@ -68,13 +120,18 @@ input.addEventListener('submit', async function(event){
     event.preventDefault();
     try {
         let search = document.getElementById("search-input").value;
-        loadResults(search);
+        loadResults(search, "name");
     } catch(e) {
         alert(e);
     }
 });
 
-main.addEventListener('load', loadResults(""));
+document.addEventListener('DOMContentLoaded', async function(event){
+    console.log("main loaded")
+    event.preventDefault();
+    loadResults("", "name");
+    getTags();
+});
 
 
 

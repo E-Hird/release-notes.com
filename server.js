@@ -3,12 +3,25 @@ const app = express();
 
 var products = require("./products.json")
 
-function check_product(product, term){
-    if (product.name.toLowerCase().includes(term)){
-        return true;
-    }
-    if (product.owner.toLowerCase().includes(term)){
-        return true;
+function check_product(product, term, type){
+    switch (type){
+        case "name":
+            if (product.name.toLowerCase().includes(term)){
+                return true;
+            }
+            break;
+        case "tags":
+            if (product.tags.includes(term)){
+                return true;
+            }
+            break;
+        case "owner":
+            if (product.owner.toLowerCase().includes(term)){
+                return true;
+            }
+            break;
+        default:
+            break;
     }
     return false;
 }
@@ -16,11 +29,25 @@ function check_product(product, term){
 app.use(express.static('client'));
 
 app.get("/products", (req, res) => {
+    let type = req.query.type;
     let search = req.query.search;
     let results = [];
     for (let i of products){
-        if(check_product(i, search)){
+        if(check_product(i, search, type)){
             results.push(i);
+        }
+    }
+    res.send(results);
+});
+
+app.get("/tags", (req, res) => {
+    let results = [];
+    for (i of products){
+        for (j of i.tags){
+            console.log(j)
+            if (!results.includes(j)){
+                results.push(j);
+            }
         }
     }
     console.log(results)
