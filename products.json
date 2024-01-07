@@ -2,7 +2,7 @@
     {
         "name": "productname",
         "tags": ["producttags"],
-        "thumbnail": "image",
+        "thumbnail": "productname.png",
         "description": "productdescription",
         "links": ["productlinks"],
         "owner": "who created the product",
@@ -12,7 +12,7 @@
     {
         "name": "GLUBO",
         "tags": ["Appliance"],
-        "thumbnail": "image",
+        "thumbnail": "GLUBO.png",
         "description": "This is a GLUBO",
         "links": ["productlinks"],
         "owner": "Mr Duck Sphere",
@@ -21,7 +21,7 @@
     {
         "name": "GLUBO2",
         "tags": ["Appliance"],
-        "thumbnail": "image",
+        "thumbnail": "GLUBO2.png",
         "description": "This is a GLUBO2, the successor to GLUBO",
         "links": ["productlinks"],
         "owner": "Mr Duck Sphere",
@@ -30,7 +30,7 @@
     {
         "name": "Cheese",
         "tags": ["Food", "Appliance"],
-        "thumbnail": "image",
+        "thumbnail": "Cheese.png",
         "description": "cheeez",
         "links": ["productlinks"],
         "owner": "cow",
@@ -39,7 +39,7 @@
     {
         "name": "Jonothon Mojon",
         "tags": ["Person"],
-        "thumbnail": "image",
+        "thumbnail": "JonothonMojon.png",
         "description": "Just some guy",
         "links": ["productlinks"],
         "owner": "Mrs Mojon",
@@ -48,7 +48,7 @@
     {
         "name": "Crackers",
         "tags": ["Food"],
-        "thumbnail": "image",
+        "thumbnail": "Crackers.png",
         "description": "To go with the cheese",
         "links": ["productlinks"],
         "owner": "Bakery",
@@ -57,7 +57,7 @@
     {
         "name": "Cow",
         "tags": ["Animal", "Food"],
-        "thumbnail": "image",
+        "thumbnail": "Cow.png",
         "description": "Created the cheese",
         "links": ["productlinks"],
         "owner": "Older Cow",

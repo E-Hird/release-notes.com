@@ -54,4 +54,17 @@ app.get("/tags", (req, res) => {
     res.send(results);
 });
 
+app.get("/file", (req, res) => {
+    console.log("File request received")
+    let src = req.query.src;
+    let f = new File([src], "/images/"+src);
+    try{
+        res.sendFile(src, {root: "./images"});
+    } catch (e){
+        console.log("cant find")
+        console.log(e)
+        res.sendStatus(404)
+    }
+});
+
 app.listen(8080);

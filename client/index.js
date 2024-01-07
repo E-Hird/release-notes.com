@@ -24,7 +24,7 @@ async function loadResults(search, type){
         let insert = `<div class="grid">\n`;
         for (let i of results){
             insert +=   `<div class="card product-card">
-            <img src="${i.thumbnail}" class="card-img-top" alt="Missing Thumbnail: ${i.name}">
+            <img src="/file?src=${i.thumbnail}" class="card-img-top" alt="Missing Thumbnail: ${i.name}">
             <div class="card-body">
                 <h5 class="card-title">${i.name}</h5>
             </div>
@@ -81,7 +81,9 @@ async function loadPreview(product){
     <h5 class="preview-label">Name</h5>
     <h4 class="preview-title">${product.name}</h4>
     <h5 class="preview-label">Image</h5>
-    <img class="preview-image" src="${product.thumbnail}" alt="Missing Thumbnail: ${product.thumbnail}">
+    <div class="preview-image"> 
+        <img class="object-fit-fill border rounded" src="/file?src=${product.thumbnail}" alt="Missing Thumbnail: ${product.name}" width="100%">
+    <div>
     <h5 class="preview-label">Creator</h5>
     <div class="preview-owner">
         <img src="${ownerIcon}" class="owner-icon" alt="Missing Icon: ${product.owner}">

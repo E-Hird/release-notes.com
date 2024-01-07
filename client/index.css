@@ -40,6 +40,9 @@
 @media (width < 768px) {
     #main-content {
         width: 100vw;
+        > .grid {
+            width: 95%;
+        }
     }
     #side-content {
         display: none !important;
@@ -77,6 +80,7 @@
 }
 
 .preview {
+    display: grid;
     > * {
         margin-left: 7%;
     }
@@ -86,10 +90,11 @@
         margin-left: 0 !important;
     }
     > .preview-image {
-        width: 90%;
+        width: 20vw;
+        height: 20vw;
     }
     > .preview-description {
-        width: 90%;
+        width: 20vw;
     }
     > .preview-tags {
         display: flex;
