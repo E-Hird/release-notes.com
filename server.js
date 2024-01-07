@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-var products = require("./products.json")
+var products = require("./products.json");
 
 function check_product(product, term, type){
     switch (type){
@@ -55,7 +55,6 @@ app.get("/tags", (req, res) => {
 });
 
 app.get("/file", (req, res) => {
-    console.log("File request received")
     let src = req.query.src;
     let f = new File([src], "/images/"+src);
     try{
