@@ -93,6 +93,14 @@
         width: 20vw;
         height: 20vw;
     }
+    > .preview-owner {
+        display: flex;
+        align-items: center;
+        > * {
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+    }
     > .preview-description {
         width: 20vw;
     }
@@ -106,4 +114,9 @@
         margin-left: 0;
         color: gray;
     }
+}
+
+.owner-icon {
+    width: 4vw;
+    height: 4vw;
 }

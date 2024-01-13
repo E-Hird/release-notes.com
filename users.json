@@ -1,0 +1,10 @@
+[
+    {   
+        "username": "username",
+        "password": "password",
+        "profile_picture": "image",
+        "description": "description of user",
+        "links": ["user links"],
+        "extras": []
+    }
+]

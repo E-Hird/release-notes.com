@@ -2,7 +2,7 @@
     {
         "name": "productname",
         "tags": ["producttags"],
-        "thumbnail": "productname.png",
+        "thumbnail": "productnme.png",
         "description": "productdescription",
         "links": ["productlinks"],
         "owner": "who created the product",

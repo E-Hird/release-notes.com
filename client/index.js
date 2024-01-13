@@ -24,7 +24,7 @@ async function loadResults(search, type){
         let insert = `<div class="grid">\n`;
         for (let i of results){
             insert +=   `<div class="card product-card">
-            <img src="/file?src=${i.thumbnail}" class="card-img-top" alt="Missing Thumbnail: ${i.name}">
+            <img src="/file?src=${i.thumbnail}" class="card-img-top" alt="Missing Thumbnail: ${i.name}" onerror="this.onerror=null;this.src='missingImage.png'">
             <div class="card-body">
                 <h5 class="card-title">${i.name}</h5>
             </div>
@@ -82,11 +82,11 @@ async function loadPreview(product){
     <h4 class="preview-title">${product.name}</h4>
     <h5 class="preview-label">Image</h5>
     <div class="preview-image"> 
-        <img class="object-fit-fill border rounded" src="/file?src=${product.thumbnail}" alt="Missing Thumbnail: ${product.name}" width="100%">
-    <div>
+        <img class="object-fit-fill border rounded" src="/file?src=${product.thumbnail}" alt="Missing Thumbnail: ${product.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
+    </div>
     <h5 class="preview-label">Creator</h5>
     <div class="preview-owner">
-        <img src="${ownerIcon}" class="owner-icon" alt="Missing Icon: ${product.owner}">
+        <img src="${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${product.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
         <p class="owner-name">${product.owner}</p>
     </div>
     <h5 class="preview-label">Description</h5>
