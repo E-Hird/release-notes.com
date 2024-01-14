@@ -1,2 +1,2 @@
-const app = require("./app");
-app.listen(8080);
+const app = require('./app')
+app.listen(8080)
