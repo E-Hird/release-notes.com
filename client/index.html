@@ -31,9 +31,37 @@
                         <a class="nav-link">+New</a>
                     </li>
                 </ul>
+                <div id="profile">
+                    <a class="btn" type="button" data-bs-toggle="offcanvas" href="#profile-offcanvas">Login / Sign up</a>
+                </div>
             </div>
         </div>
     </nav>
+    <!-- Based on Offcanvas example from Bootstrap https://getbootstrap.com/docs/5.3/components/offcanvas/ -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="profile-offcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="profile-title">Login / Sign up</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body" id="profile-body">
+            <form id="login-form">
+                <!-- Taken from Bootstrap example https://getbootstrap.com/docs/5.3/forms/floating-labels/#example -->
+                <div class="form-floating mb-3">
+                    <input type="username" class="form-control" id="userInput" placeholder="Username">
+                    <label for="floatingInput">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="passwordInput" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+                <div id="login-buttons">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button class="btn btn-secondary" id="signup-btn">Sign up</button>
+                </div>
+            </form>
+            <div id="login-status"></div>
+        </div>
+    </div>
     <main id="site-content">
         <div class="container-fluid" id="main-content">
             <form id="searchbar">
@@ -44,7 +72,8 @@
             <div id="results"></div>
         </div>
         <div class="container-fluid" id="side-content">
-            Preview area
+            <h5>Preview</h5>
+            <div id="preview-area"></div>
         </div>
     </main>
     <script src="index.js"></script>

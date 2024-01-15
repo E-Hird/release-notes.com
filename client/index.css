@@ -93,14 +93,6 @@
         width: 20vw;
         height: 20vw;
     }
-    > .preview-owner {
-        display: flex;
-        align-items: center;
-        > * {
-            margin-right: 10px;
-            margin-bottom: 0;
-        }
-    }
     > .preview-description {
         width: 20vw;
     }
@@ -116,7 +108,45 @@
     }
 }
 
+.preview-owner, #profile-nav {
+    display: flex;
+    align-items: center;
+    > * {
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+}
+
 .owner-icon {
     width: 4vw;
     height: 4vw;
+}
+
+#login-buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin: 1vw;
+    > * {
+        margin: 1vw;
+    }
+}
+
+#profile-short {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    > #profile-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        > h5 {
+            margin: 5px;
+            height: 20px;
+        }
+        > button {
+            margin: 5px;
+            height: 40px;
+            width: 100%;
+        }
+    }
 }
