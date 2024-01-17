@@ -30,16 +30,45 @@ function check_product (product, term, type) {
 app.use(express.static('client'))
 app.use(express.urlencoded())
 
+// GET list of products based on a set of tags and/or a search
 app.get('/products', (req, res) => {
   const type = req.query.type
   const search = req.query.search
   const results = []
   for (let i of products) {
     if (check_product(i, search, type)) {
-      results.push(i)
+      results.push(`{"name":"${i.name}", "thumbnail": "${i.thumbnail}"}`)
     }
   }
   res.send(results)
+})
+
+// GET details of a specific product
+app.get("/product", (req, res) => {
+  const product = req.query.name
+  let found = false
+  for (let i of products){
+    if (product == i.name){
+      res.send(i)
+      found = true
+      break
+    }
+  }
+  if (!found) res.sendStatus(404)
+})
+
+// POST a new product to the server
+app.post("/new-product", (req, res) => {
+  console.log("New Product")
+  console.log(req.body)
+  data = req.body
+  const n_name = data["new-name"]
+  const n_tags = data["new-tags"]
+  const n_thumbnail = data["new-thumbnail"]
+  const n_description = data["new-description"]
+  const n_links = data["new-links"]
+  const n_owner = data["new-owner"]
+  const n_extras = data["new-name"]
 })
 
 app.get('/tags', (req, res) => {
@@ -58,9 +87,9 @@ app.get('/tags', (req, res) => {
 
 app.get('/file', (req, res) => {
   const src = req.query.src
-  const f = new File([src], '/images/' + src)
+  const f = new File([src], '/files/' + src)
   try {
-    res.sendFile(src, { root: './images' })
+    res.sendFile(src, { root: './files' })
   } catch (e) {
     console.log('cant find')
     console.log(e)
