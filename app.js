@@ -4,20 +4,21 @@ const app = express()
 const products = require('./products.json')
 const users = require('./users.json')
 
-function check_product (product, term, type) {
+function check_target (target, term, type) {
+  console.log(target)
   switch (type) {
     case 'name':
-      if (product.name.toLowerCase().includes(term)) {
+      if (target.name.toLowerCase().includes(term)) {
         return true
       }
       break
     case 'tags':
-      if (product.tags.includes(term)) {
+      if (target.tags.includes(term)) {
         return true
       }
       break
     case 'owner':
-      if (product.owner.toLowerCase().includes(term)) {
+      if (target.owner.toLowerCase().includes(term)) {
         return true
       }
       break
@@ -32,12 +33,12 @@ app.use(express.urlencoded())
 
 // GET list of products based on a set of tags and/or a search
 app.get('/products', (req, res) => {
-  const type = req.query.type
-  const search = req.query.search
+  const method_ = req.query.method
+  const search_ = req.query.search
   const results = []
   for (let i of products) {
-    if (check_product(i, search, type)) {
-      results.push(`{"name":"${i.name}", "thumbnail": "${i.thumbnail}"}`)
+    if (check_target(i, search_, method_)) {
+      results.push(JSON.parse(`{"name":"${i.name}", "thumbnail": "${i.thumbnail}"}`))
     }
   }
   res.send(results)
@@ -45,10 +46,10 @@ app.get('/products', (req, res) => {
 
 // GET details of a specific product
 app.get("/product", (req, res) => {
-  const product = req.query.name
+  const product_ = req.query.name
   let found = false
   for (let i of products){
-    if (product == i.name){
+    if (product_ == i.name){
       res.send(i)
       found = true
       break
@@ -69,6 +70,33 @@ app.post("/new-product", (req, res) => {
   const n_links = data["new-links"]
   const n_owner = data["new-owner"]
   const n_extras = data["new-name"]
+})
+
+// GET List of owners/companies
+app.get("/users", (req, res) => {
+  const method_ = req.query.method
+  const search_ = req.query.search
+  const results = []
+  for (let i of users) {
+    if (check_target(i, search_, method_)) {
+      results.push(JSON.parse(`{"name":"${i.name}", "thumbnail": "${i.profile_picture}"}`))
+    }
+  }
+  res.send(results)
+})
+
+// GET details of a specific user
+app.get("/user", (req, res) => {
+  const user_ = req.query.name
+  let found = false
+  for (let i of users){
+    if (user_ == i.name){
+      res.send(i)
+      found = true
+      break
+    }
+  }
+  if (!found) res.sendStatus(404)
 })
 
 app.get('/tags', (req, res) => {
@@ -102,7 +130,7 @@ app.get("/login", (req, res) => {
   const password = req.query.password
   let found = false
   for (var i of users){
-    if (username == i.username){
+    if (username == i.name){
       found = true
       break
     }

@@ -1,9 +1,56 @@
 [
     {   
-        "username": "username",
+        "name": "username",
         "password": "password",
         "profile_picture": "image",
+        "tags": ["user tags"],
         "description": "description of user",
+        "links": ["user links"],
+        "extras": []
+    },
+
+    {   
+        "name": "Mr Duck Sphere",
+        "password": "duk",
+        "profile_picture": "image",
+        "tags": ["Gaming", "Household"],
+        "description": "A very round duck",
+        "links": ["user links"],
+        "extras": []
+    },
+    {   
+        "name": "cow",
+        "password": "moo",
+        "profile_picture": "image",
+        "tags": ["Animal"],
+        "description": "A bovine mammalian",
+        "links": ["user links"],
+        "extras": []
+    },
+    {   
+        "name": "Mrs Mojon",
+        "password": "biscuits",
+        "profile_picture": "image",
+        "tags": ["Woman"],
+        "description": "Just some old woman.",
+        "links": ["user links"],
+        "extras": []
+    },
+    {   
+        "name": "Bakery",
+        "password": "bred",
+        "profile_picture": "image",
+        "tags": ["Bakery"],
+        "description": "The place where bread is made.",
+        "links": ["user links"],
+        "extras": []
+    },
+    {   
+        "name": "Older Cow",
+        "password": "mooo",
+        "profile_picture": "image",
+        "tags": ["Animal", "Woman"],
+        "description": "The mother of cow.",
         "links": ["user links"],
         "extras": []
     }

@@ -8,20 +8,9 @@ let tagButtons = []
 
 const user = 0
 
-async function loadResults (search, type) {
+async function loadResults (search, type, method) {
   main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
-  let searchRes
-  switch (type) {
-    case 'name':
-      searchRes = await fetch(`http://127.0.0.1:8080/products?type=name&search=${search}`)
-      break
-    case 'tag':
-      searchRes = await fetch(`http://127.0.0.1:8080/products?type=tags&search=${search}`)
-      break
-    case 'owner':
-      searchRes = await fetch(`http://127.0.0.1:8080/products?type=owner&search=${search}`)
-      break
-  }
+  let searchRes = await fetch(`http://127.0.0.1:8080/${type}?method=${method}&search=${search}`)
   if (searchRes.ok) {
     results = await searchRes.json()
     let insert = '<div class="grid">\n'
@@ -43,7 +32,7 @@ async function loadResults (search, type) {
     for (let i = 0; i < products.length; i++) {
       products[i].addEventListener('click', async function (event) {
         event.preventDefault()
-        loadPreview(results[i])
+        loadPreview(results[i].name)
       })
     }
   }
@@ -51,7 +40,7 @@ async function loadResults (search, type) {
 
 async function getTags () {
   tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
-  let tagRes = await fetch('http://127.0.0.1:8080/tags')
+  let tagRes = await fetch('/tags')
   let tagList = await tagRes.json()
   let insert = ''
   console.log(tagRes)
@@ -69,7 +58,7 @@ async function getTags () {
       event.preventDefault()
       try {
         let tag = tagButtons[i].innerHTML
-        loadResults(tag, 'tag')
+        loadResults(tag, 'products', 'tags')
       } catch (e) {
         alert(e)
       }
@@ -77,45 +66,53 @@ async function getTags () {
   }
 }
 
-async function loadPreview (product) {
-  console.log('product clicked')
-  let ownerIcon = 'this is the owner icon'
-  let insert = `<div class="preview">
-    <h5 class="preview-label">Name</h5>
-    <h4 class="preview-title">${product.name}</h4>
-    <h5 class="preview-label">Image</h5>
-    <div class="preview-image"> 
-        <img class="object-fit-fill border rounded" src="/file?src=${product.thumbnail}" alt="Missing Thumbnail: ${product.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
-    </div>
-    <h5 class="preview-label">Creator</h5>
-    <div class="preview-owner">
-        <img src="${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${product.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
-        <h5 class="owner-name">${product.owner}</h5>
-    </div>
-    <h5 class="preview-label">Description</h5>
-    <p class="preview-description">${product.description}</p>
-    <h5 class="preview-label">Tags</h5>
-    <div class="preview-tags">
-    `
-  for (let i of product.tags) {
-    insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
-  }
-  insert += `</div>
-    <a type="button" class="see-more">See more...</button>
-    </div>`
-  side.innerHTML = insert
+async function loadPreview (productname) {
+  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;">'
+  const productRes = await fetch(`/product?name=${productname}`)
+  if (productRes.ok){
+    let product = await productRes.json()
+    let ownerIcon = 'this is the owner icon'
+    let insert = `<div class="preview">
+      <h5 class="preview-label">Name</h5>
+      <h4 class="preview-title">${product.name}</h4>
+      <h5 class="preview-label">Image</h5>
+      <div class="preview-image"> 
+          <img class="object-fit-fill border rounded" src="/file?src=${product.thumbnail}" alt="Missing Thumbnail: ${product.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
+      </div>
+      <h5 class="preview-label">Creator</h5>
+      <div class="preview-owner">
+          <img src="${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${product.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
+          <h5 class="owner-name">${product.owner}</h5>
+      </div>
+      <h5 class="preview-label">Description</h5>
+      <p class="preview-description">${product.description}</p>
+      <h5 class="preview-label">Tags</h5>
+      <div class="preview-tags">
+      `
+    for (let i of product.tags) {
+      insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
+    }
+    insert += `</div>
+      <a type="button" class="see-more">See more...</button>
+      </div>`
+    console.log("Made preview")
+    side.innerHTML = insert
 
-  tagButtons = document.getElementsByClassName('tag-btn')
-  for (let i = 0; i < tagButtons.length; i++) {
-    tagButtons[i].addEventListener('click', async function (event) {
-      event.preventDefault()
-      try {
-        const tag = tagButtons[i].innerHTML
-        loadResults(tag, 'tag')
-      } catch (e) {
-        alert(e)
-      }
-    })
+    tagButtons = document.getElementsByClassName('tag-btn')
+    for (let i = 0; i < tagButtons.length; i++) {
+      tagButtons[i].addEventListener('click', async function (event) {
+        event.preventDefault()
+        try {
+          const tag = tagButtons[i].innerHTML
+          loadResults(tag, 'products', 'tags')
+        } catch (e) {
+          alert(e)
+        }
+      })
+    }
+  } else {
+    insert = `Product not found`
+    side.innerHTML = insert
   }
 }
 
@@ -133,11 +130,17 @@ async function displayProfile(){
     <img src="/file?src=${userData.profile_picture}" class="owner-icon border rounded" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'" style="width:180px;height:180px;">
     <div id="profile-buttons">
     <h5>${userData.username}</h5>
-    <button class="btn btn-secondary">View Profile</button>
-    <button class="btn btn-secondary">Edit Profile</button>
-    <button class="btn btn-danger">Logout</button>
+    <button id="view-profile" class="btn btn-secondary">View Profile</button>
+    <button id="edit-profile" class="btn btn-secondary">Edit Profile</button>
+    <button id="logout-btn" class="btn btn-danger">Logout</button>
     </div>
     </div>`
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      sessionStorage.setItem("loggedIn", "false")
+      sessionStorage.setItem("user", "")
+      location.reload()
+    })
 }
 
 const input = document.getElementById('searchbar')
@@ -148,7 +151,7 @@ input.addEventListener('submit', async function (event) {
   event.preventDefault()
   try {
     let search = document.getElementById('search-input').value
-    loadResults(search, 'name')
+    loadResults(search, 'products', 'name')
   } catch (e) {
     alert(e)
   }
@@ -191,6 +194,6 @@ document.addEventListener('DOMContentLoaded', async function (event) {
   if (logged == "true"){
     displayProfile()
   }
-  loadResults('', 'name')
+  loadResults('', 'products', 'name')
   getTags()
 })

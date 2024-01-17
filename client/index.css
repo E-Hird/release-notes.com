@@ -64,6 +64,11 @@
     }
 }
 
+.tag-btn {
+    margin-left: 1.25%;
+    margin-bottom: 2px;
+}
+
 .grid {
     display: flex;
     flex-wrap: wrap;
