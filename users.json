@@ -2,56 +2,50 @@
     {   
         "name": "username",
         "password": "password",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["user tags"],
         "description": "description of user",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     },
 
     {   
         "name": "Mr Duck Sphere",
         "password": "duk",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["Gaming", "Household"],
         "description": "A very round duck",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     },
     {   
         "name": "cow",
         "password": "moo",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["Animal"],
         "description": "A bovine mammalian",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     },
     {   
         "name": "Mrs Mojon",
         "password": "biscuits",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["Woman"],
         "description": "Just some old woman.",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     },
     {   
         "name": "Bakery",
         "password": "bred",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["Bakery"],
         "description": "The place where bread is made.",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     },
     {   
         "name": "Older Cow",
         "password": "mooo",
-        "profile_picture": "image",
+        "image": "image",
         "tags": ["Animal", "Woman"],
         "description": "The mother of cow.",
-        "links": ["user links"],
-        "extras": []
+        "links": [{"text": "link Text", "href":"/"}]
     }
 ]

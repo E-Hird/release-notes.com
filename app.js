@@ -5,7 +5,6 @@ const products = require('./products.json')
 const users = require('./users.json')
 
 function check_target (target, term, type) {
-  console.log(target)
   switch (type) {
     case 'name':
       if (target.name.toLowerCase().includes(term)) {
@@ -18,7 +17,7 @@ function check_target (target, term, type) {
       }
       break
     case 'owner':
-      if (target.owner.toLowerCase().includes(term)) {
+      if (target.owner == term) {
         return true
       }
       break
@@ -38,7 +37,7 @@ app.get('/products', (req, res) => {
   const results = []
   for (let i of products) {
     if (check_target(i, search_, method_)) {
-      results.push(JSON.parse(`{"name":"${i.name}", "thumbnail": "${i.thumbnail}"}`))
+      results.push(JSON.parse(`{"name":"${i.name}", "image": "${i.image}"}`))
     }
   }
   res.send(results)
@@ -72,7 +71,7 @@ app.post("/new-product", (req, res) => {
   const n_extras = data["new-name"]
 })
 
-// GET List of owners/companies
+// GET List of users/companies
 app.get("/users", (req, res) => {
   const method_ = req.query.method
   const search_ = req.query.search
@@ -100,16 +99,15 @@ app.get("/user", (req, res) => {
 })
 
 app.get('/tags', (req, res) => {
+  const type_ = req.query.type
   const results = []
-  for (let i of products) {
+  for (let i of eval(type_)) {
     for (j of i.tags) {
-      console.log(j)
       if (!results.includes(j)) {
         results.push(j)
       }
     }
   }
-  console.log(results)
   res.send(results)
 })
 

@@ -2,65 +2,65 @@
     {
         "name": "productname",
         "tags": ["producttags"],
-        "thumbnail": "image",
+        "image": "image",
         "description": "productdescription",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "who created the product",
-        "extras": {}
+        "extras": ["blogPost.txt", "gallery.png"]
     },
     
     {
         "name": "GLUBO",
         "tags": ["Appliance"],
-        "thumbnail": "GLUBO.png",
+        "image": "GLUBO.png",
         "description": "This is a GLUBO",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "Mr Duck Sphere",
-        "extras": {}
+        "extras": []
     },
     {
         "name": "GLUBO2",
         "tags": ["Appliance"],
-        "thumbnail": "GLUBO2.png",
+        "image": "GLUBO2.png",
         "description": "This is a GLUBO2, the successor to GLUBO",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "Mr Duck Sphere",
-        "extras": {}
+        "extras": []
     },
     {
         "name": "Cheese",
         "tags": ["Food", "Appliance"],
-        "thumbnail": "Cheese.png",
+        "image": "Cheese.png",
         "description": "cheeez",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "cow",
-        "extras": {}
+        "extras": []
     },
     {
         "name": "Jonothon Mojon",
         "tags": ["Person"],
-        "thumbnail": "JonothonMojon.png",
+        "image": "JonothonMojon.png",
         "description": "Just some guy",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "Mrs Mojon",
-        "extras": {}
+        "extras": []
     },
     {
         "name": "Crackers",
         "tags": ["Food"],
-        "thumbnail": "Crackers.png",
+        "image": "Crackers.png",
         "description": "To go with the cheese",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "Bakery",
-        "extras": {}
+        "extras": []
     },
     {
         "name": "Cow",
         "tags": ["Animal", "Food"],
-        "thumbnail": "Cow.png",
+        "image": "Cow.png",
         "description": "Created the cheese",
-        "links": ["productlinks"],
+        "links": [{"text": "link Text", "href":"/"}],
         "owner": "Older Cow",
-        "extras": {}
+        "extras": []
     }
 ]

@@ -62,6 +62,9 @@
             width: 25%;
         }
     }
+    #item-display, #item-details {
+        width: 90% !important;
+    }
 }
 
 .tag-btn {
@@ -84,42 +87,68 @@
     }
 }
 
-.preview {
+#preview {
     display: grid;
     > * {
         margin-left: 7%;
     }
-    > .preview-label {
-        color: dimgray;
-        font-size: medium;
-        margin-left: 0 !important;
-    }
-    > .preview-image {
+    > #preview-image {
         width: 20vw;
         height: 20vw;
     }
-    > .preview-description {
+    > #preview-description {
         width: 20vw;
     }
-    > .preview-tags {
+    > #preview-tags {
         display: flex;
         > * {
             margin-right: 5px;
         }
     }
-    > .see-more {
+    > #see-more {
         margin-left: 0;
         color: gray;
     }
 }
 
-.preview-owner, #profile-nav {
+.owner-profile, #profile-nav {
     display: flex;
     align-items: center;
     > * {
         margin-right: 10px;
         margin-bottom: 0;
     }
+}
+
+#item-page {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    flex-direction: row;
+    > * {
+        margin-left: 5%;
+    }
+    > #item-display {
+        width: 30%;
+    }
+    > #item-details {
+        width: 60%;
+        > #item-tags{
+            > * {
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+    }
+}
+
+.label {
+    color: dimgray;
+    font-size: medium;
+    margin-left: 0 !important;
 }
 
 .owner-icon {
