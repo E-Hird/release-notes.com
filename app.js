@@ -78,7 +78,7 @@ app.get("/users", (req, res) => {
   const results = []
   for (let i of users) {
     if (check_target(i, search_, method_)) {
-      results.push(JSON.parse(`{"name":"${i.name}", "thumbnail": "${i.profile_picture}"}`))
+      results.push(JSON.parse(`{"name":"${i.name}", "image": "${i.image}"}`))
     }
   }
   res.send(results)
@@ -90,8 +90,13 @@ app.get("/user", (req, res) => {
   let found = false
   for (let i of users){
     if (user_ == i.name){
-      res.send(i)
+      console.log(i)
+      let copy = JSON.parse(JSON.stringify(i))
+      delete copy.password
+      console.log(copy)
+      res.send(copy)
       found = true
+      console.log(i)
       break
     }
   }

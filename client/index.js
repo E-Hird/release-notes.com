@@ -17,6 +17,7 @@ async function loadResults (search, type, method, target=main) {
     let insert = '<div class="grid">\n'
     let defaultImage = (type=='products') ? "missingImage.png" : "defaultIcon.png"
     for (let i of results) {
+      console.log(i)
       insert += `<div class="card product-card">
             <img src="/file?src=${i.image}" class="card-img-top" alt="Missing Thumbnail: ${i.name}" onerror="this.onerror=null;this.src='${defaultImage}'">
             <div class="card-body">
@@ -42,7 +43,8 @@ async function loadResults (search, type, method, target=main) {
             loadPreview(results[i].name, type_)
           }
         } catch(e){
-          alert(e)
+          //alert(e)
+          console.log(e.name + ": " + e.message)
         } 
       })
       products[i].addEventListener('dblclick', async function (event) {
@@ -51,7 +53,8 @@ async function loadResults (search, type, method, target=main) {
           let type_ = type.slice(0, -1)
           loadResult(results[i].name, type_)
         } catch(e){
-          alert(e)
+          //alert(e)
+          console.log(e.name + ": " + e.message)
         } 
       })
     }
@@ -75,10 +78,12 @@ async function getTags (type) {
     tagButtons[i].addEventListener('click', async function (event) {
       event.preventDefault()
       try {
-        let tag = tagButtons[i].innerHTML
+        const tag = tagButtons[i].innerHTML
         loadResults(tag, type, 'tags')
+        getTags(type)
       } catch (e) {
-        alert(e)
+        //alert(e)
+        console.log(e.name + ": " + e.message)
       }
     })
   }
@@ -97,11 +102,11 @@ async function loadPreview(itemname, type) {
           <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
       </div>`
       if (type == "product"){
-        let ownerData = await fetch(`/user?name=${item.owner}`)
+        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
         let ownerIcon = ownerData.image
         insert += `<h5 class="label">Creator</h5>
-        <div class="owner-profile">
-            <img src="${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
+        <div id="owner-profile" class="user-profile">
+            <img src="/file?src=${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
             <h5 id="owner-name">${item.owner}</h5>
         </div>`
       }
@@ -127,7 +132,19 @@ async function loadPreview(itemname, type) {
           loadResults(tag, `${type}s`, 'tags')
           getTags(`${type}s`)
         } catch (e) {
-          alert(e)
+          //alert(e)
+          console.log(e.name + ": " + e.message)
+        }
+      })
+    }
+    if (type == "product"){
+      document.getElementById("owner-profile").addEventListener("dblclick", async function(event) {
+        event.preventDefault()
+        try{
+          loadResult(item.owner, "user")
+        } catch(e) {
+          //alert(e)
+          console.log(e.name + ": " + e.message)
         }
       })
     }
@@ -136,7 +153,8 @@ async function loadPreview(itemname, type) {
       try{
         loadResult(item.name, type)
       } catch(e) {
-        alert(e)
+        //alert(e)
+          console.log(e.name + ": " + e.message)
       }
     })
   } else {
@@ -161,12 +179,12 @@ async function loadResult(name, type){
       </div>
       <div id="item-details">`
       if (type == 'product'){
-        let ownerData = await fetch(`/user?name=${item.owner}`)
+        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
         let ownerIcon = ownerData.image
         insert += `
         <h5 class="label">Creator</h5>
-        <div id="item-owner">
-            <img src="${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
+        <div id="item-owner" class="user-profile">
+            <img src="/file?src=${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
             <h5 id="owner-name">${item.owner}</h5>
         </div>`
       }
@@ -194,12 +212,13 @@ async function loadResult(name, type){
       }
       insert += "</div>"
       main.innerHTML = insert
-      document.getElementById("item-owner").addEventListener("click", async function(event) {
+      document.getElementById("item-owner").addEventListener("dblclick", async function(event) {
         event.preventDefault()
         try{
           loadResult(item.owner, "user")
         } catch(e) {
-          alert(e)
+          //alert(e)
+          console.log(e.name + ": " + e.message)
         }
       })
     } else if (type == "user"){
@@ -224,7 +243,8 @@ async function loadResult(name, type){
           loadResults(tag, `${type}s`, 'tags')
           getTags(`${type}s`)
         } catch (e) {
-          alert(e)
+          //alert(e)
+          console.log(e.name + ": " + e.message)
         }
       })
     }
@@ -237,7 +257,7 @@ async function displayProfile(){
   console.log("logged in")
   let userData = JSON.parse(sessionStorage.getItem("user"))
   document.getElementById("profile").innerHTML = `
-  <a class="btn" id="profile-nav" type="button" data-bs-toggle="offcanvas" href="#profile-offcanvas">
+  <a class="btn user-profile" id="profile-nav" type="button" data-bs-toggle="offcanvas" href="#profile-offcanvas">
   <img src="/file?src=${userData.image}" class="owner-icon border rounded-circle" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'">
   <h5>${userData.name}</h5>
   </a>`
@@ -247,15 +267,19 @@ async function displayProfile(){
   <img src="/file?src=${userData.image}" class="owner-icon border rounded" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'" style="width:180px;height:180px;">
   <div id="profile-buttons">
   <h5>${userData.name}</h5>
-  <button id="view-profile" class="btn btn-secondary">View Profile</button>
-  <button id="edit-profile" class="btn btn-secondary">Edit Profile</button>
+  <button id="view-profile" class="btn btn-secondary" data-bs-dismiss="offcanvas">View Profile</button>
+  <button id="edit-profile" class="btn btn-secondary" data-bs-dismiss="offcanvas">Edit Profile</button>
   <button id="logout-btn" class="btn btn-danger">Logout</button>
   </div>
   </div>`
 
+  document.getElementById("view-profile").addEventListener("click", () => {
+    loadResult(userData.name, "user")
+  })
   document.getElementById("logout-btn").addEventListener("click", () => {
     sessionStorage.setItem("loggedIn", "false")
     sessionStorage.setItem("user", "")
+    sessionStorage.setItem("page", "products")
     location.reload()
   })
 }
@@ -290,7 +314,8 @@ document.getElementById('searchbar').addEventListener('submit', async function (
     loadResults(search, type_, 'name')
     getTags(type_)
   } catch (e) {
-    alert(e)
+    //alert(e)
+    console.log(e.name + ": " + e.message)
   }
 })
 

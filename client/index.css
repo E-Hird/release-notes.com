@@ -111,9 +111,11 @@
     }
 }
 
-.owner-profile, #profile-nav {
-    display: flex;
+.user-profile {
+    display: flex !important;
     align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
     > * {
         margin-right: 10px;
         margin-bottom: 0;
@@ -133,6 +135,10 @@
     }
     > #item-details {
         width: 60%;
+        > *:not(.label) {
+            width: 100%;
+            padding-left: 2vw;
+        }
         > #item-tags{
             > * {
                 margin-left: 10px;
@@ -152,8 +158,8 @@
 }
 
 .owner-icon {
-    width: 3vw;
-    height: 3vw;
+    width: 40px;
+    height: 40px;
 }
 
 #login-buttons {

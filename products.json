@@ -5,7 +5,7 @@
         "image": "image",
         "description": "productdescription",
         "links": [{"text": "link Text", "href":"/"}],
-        "owner": "who created the product",
+        "owner": "username",
         "extras": ["blogPost.txt", "gallery.png"]
     },
     

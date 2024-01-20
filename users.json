@@ -11,7 +11,7 @@
     {   
         "name": "Mr Duck Sphere",
         "password": "duk",
-        "image": "image",
+        "image": "duckSphere.png",
         "tags": ["Gaming", "Household"],
         "description": "A very round duck",
         "links": [{"text": "link Text", "href":"/"}]
@@ -19,7 +19,7 @@
     {   
         "name": "cow",
         "password": "moo",
-        "image": "image",
+        "image": "cowProfile.png",
         "tags": ["Animal"],
         "description": "A bovine mammalian",
         "links": [{"text": "link Text", "href":"/"}]
@@ -27,7 +27,7 @@
     {   
         "name": "Mrs Mojon",
         "password": "biscuits",
-        "image": "image",
+        "image": "MrsMojon.png",
         "tags": ["Woman"],
         "description": "Just some old woman.",
         "links": [{"text": "link Text", "href":"/"}]
@@ -35,7 +35,7 @@
     {   
         "name": "Bakery",
         "password": "bred",
-        "image": "image",
+        "image": "Bakery.png",
         "tags": ["Bakery"],
         "description": "The place where bread is made.",
         "links": [{"text": "link Text", "href":"/"}]
@@ -43,7 +43,7 @@
     {   
         "name": "Older Cow",
         "password": "mooo",
-        "image": "image",
+        "image": "oldCowProfile.png",
         "tags": ["Animal", "Woman"],
         "description": "The mother of cow.",
         "links": [{"text": "link Text", "href":"/"}]
