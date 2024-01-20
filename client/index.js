@@ -6,9 +6,12 @@ let results = []
 let products = []
 let tagButtons = []
 
+
+let newTags = []
+
 const user = 0
 
-async function loadResults (search, type, method, target=main) {
+async function loadResults(search, type, method, target=main){
   sessionStorage.setItem("page", (target == main) ? type:user )
   target.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
   let searchRes = await fetch(`http://127.0.0.1:8080/${type}?method=${method}&search=${search}`)
@@ -17,7 +20,6 @@ async function loadResults (search, type, method, target=main) {
     let insert = '<div class="grid">\n'
     let defaultImage = (type=='products') ? "missingImage.png" : "defaultIcon.png"
     for (let i of results) {
-      console.log(i)
       insert += `<div class="card product-card">
             <img src="/file?src=${i.image}" class="card-img-top" alt="Missing Thumbnail: ${i.name}" onerror="this.onerror=null;this.src='${defaultImage}'">
             <div class="card-body">
@@ -58,108 +60,6 @@ async function loadResults (search, type, method, target=main) {
         } 
       })
     }
-  }
-}
-
-async function getTags (type) {
-  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
-  let tagRes = await fetch(`/tags?type=${type}`)
-  let tagList = await tagRes.json()
-  let insert = ''
-  if (tagRes.ok) {
-    for (let i of tagList) {
-      insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
-    }
-  }
-  tagSite.innerHTML = insert
-
-  tagButtons = document.getElementsByClassName('tag-btn')
-  for (let i = 0; i < tagButtons.length; i++) {
-    tagButtons[i].addEventListener('click', async function (event) {
-      event.preventDefault()
-      try {
-        const tag = tagButtons[i].innerHTML
-        loadResults(tag, type, 'tags')
-        getTags(type)
-      } catch (e) {
-        //alert(e)
-        console.log(e.name + ": " + e.message)
-      }
-    })
-  }
-}
-
-async function loadPreview(itemname, type) {
-  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;">'
-  const itemRes = await fetch(`/${type}?name=${itemname}`)
-  if (itemRes.ok){
-    let item = await itemRes.json()
-    let insert = `<div id="preview">
-      <h5 class="label">Name</h5>
-      <h4 id="preview-title">${item.name}</h4>
-      <h5 class="label">Image</h5>
-      <div id="preview-image"> 
-          <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
-      </div>`
-      if (type == "product"){
-        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
-        let ownerIcon = ownerData.image
-        insert += `<h5 class="label">Creator</h5>
-        <div id="owner-profile" class="user-profile">
-            <img src="/file?src=${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
-            <h5 id="owner-name">${item.owner}</h5>
-        </div>`
-      }
-      insert += `<h5 class="label">Description</h5>
-      <p id="preview-description">${item.description}</p>
-      <h5 class="label">Tags</h5>
-      <div id="preview-tags">
-      `
-    for (let i of item.tags) {
-      insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
-    }
-    insert += `</div>
-      <a type="button" id="see-more">See more...</button>
-      </div>`
-    side.innerHTML = insert
-
-    tagButtons = document.getElementsByClassName('tag-btn')
-    for (let i = 0; i < tagButtons.length; i++) {
-      tagButtons[i].addEventListener('click', async function (event) {
-        event.preventDefault()
-        try {
-          const tag = tagButtons[i].innerHTML
-          loadResults(tag, `${type}s`, 'tags')
-          getTags(`${type}s`)
-        } catch (e) {
-          //alert(e)
-          console.log(e.name + ": " + e.message)
-        }
-      })
-    }
-    if (type == "product"){
-      document.getElementById("owner-profile").addEventListener("dblclick", async function(event) {
-        event.preventDefault()
-        try{
-          loadResult(item.owner, "user")
-        } catch(e) {
-          //alert(e)
-          console.log(e.name + ": " + e.message)
-        }
-      })
-    }
-    document.getElementById("see-more").addEventListener("click", async function(event) {
-      event.preventDefault()
-      try{
-        loadResult(item.name, type)
-      } catch(e) {
-        //alert(e)
-          console.log(e.name + ": " + e.message)
-      }
-    })
-  } else {
-    insert = `Item not found`
-    side.innerHTML = insert
   }
 }
 
@@ -253,6 +153,108 @@ async function loadResult(name, type){
   }
 }
 
+async function loadPreview(itemname, type) {
+  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;">'
+  const itemRes = await fetch(`/${type}?name=${itemname}`)
+  if (itemRes.ok){
+    let item = await itemRes.json()
+    let insert = `<div id="preview">
+      <h5 class="label">Name</h5>
+      <h4 id="preview-title">${item.name}</h4>
+      <h5 class="label">Image</h5>
+      <div id="preview-image"> 
+          <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
+      </div>`
+      if (type == "product"){
+        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
+        let ownerIcon = ownerData.image
+        insert += `<h5 class="label">Creator</h5>
+        <div id="owner-profile" class="user-profile">
+            <img src="/file?src=${ownerIcon}" class="owner-icon border rounded-circle" alt="Missing Icon: ${item.owner}" onerror="this.onerror=null;this.src='defaultIcon.png'">
+            <h5 id="owner-name">${item.owner}</h5>
+        </div>`
+      }
+      insert += `<h5 class="label">Description</h5>
+      <p id="preview-description">${item.description}</p>
+      <h5 class="label">Tags</h5>
+      <div id="preview-tags">
+      `
+    for (let i of item.tags) {
+      insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
+    }
+    insert += `</div>
+      <a type="button" id="see-more">See more...</button>
+      </div>`
+    side.innerHTML = insert
+
+    tagButtons = document.getElementsByClassName('tag-btn')
+    for (let i = 0; i < tagButtons.length; i++) {
+      tagButtons[i].addEventListener('click', async function (event) {
+        event.preventDefault()
+        try {
+          const tag = tagButtons[i].innerHTML
+          loadResults(tag, `${type}s`, 'tags')
+          getTags(`${type}s`)
+        } catch (e) {
+          //alert(e)
+          console.log(e.name + ": " + e.message)
+        }
+      })
+    }
+    if (type == "product"){
+      document.getElementById("owner-profile").addEventListener("dblclick", async function(event) {
+        event.preventDefault()
+        try{
+          loadResult(item.owner, "user")
+        } catch(e) {
+          //alert(e)
+          console.log(e.name + ": " + e.message)
+        }
+      })
+    }
+    document.getElementById("see-more").addEventListener("click", async function(event) {
+      event.preventDefault()
+      try{
+        loadResult(item.name, type)
+      } catch(e) {
+        //alert(e)
+          console.log(e.name + ": " + e.message)
+      }
+    })
+  } else {
+    insert = `Item not found`
+    side.innerHTML = insert
+  }
+}
+
+async function getTags(type){
+  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  let tagRes = await fetch(`/tags?type=${type}`)
+  let tagList = await tagRes.json()
+  let insert = ''
+  if (tagRes.ok) {
+    for (let i of tagList) {
+      insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
+    }
+  }
+  tagSite.innerHTML = insert
+
+  tagButtons = document.getElementsByClassName('tag-btn')
+  for (let i = 0; i < tagButtons.length; i++) {
+    tagButtons[i].addEventListener('click', async function (event) {
+      event.preventDefault()
+      try {
+        const tag = tagButtons[i].innerHTML
+        loadResults(tag, type, 'tags')
+        getTags(type)
+      } catch (e) {
+        //alert(e)
+        console.log(e.name + ": " + e.message)
+      }
+    })
+  }
+}
+
 async function displayProfile(){
   console.log("logged in")
   let userData = JSON.parse(sessionStorage.getItem("user"))
@@ -304,6 +306,136 @@ async function loadPage(page){
   }
 }
 
+async function postUser(){
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  let insert = `
+  <h3>Sign Up</h3>
+  <form id="new-user">
+    <div>
+      <label class="form-label" for="nameInput">Username</label>
+      <input type="text" class="form-control" id="nameInput" placeholder="Username" maxlength="20" required>
+      <div id="usernameHelp" class="form-text">
+        Username must be <20 characters long.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="passwordCreate">Password</label>
+      <input type="password" class="form-control" id="passwordCreate" placeholder="Password" maxlength="20" minlength="8" required>
+      <div id="passwordHelp" class="form-text">
+        Password must be 8 - 20 characters long.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="passwordConfirm">Confirm Password</label>
+      <input type="password" class="form-control" id="passwordConfirm" placeholder="Re-type Password" maxlength="20" minlength="8" required>
+    </div>
+    <div>
+      <label class="form-label" for="iconInput">Upload Profile Picture</label>
+      <input type="file" class="form-control" id="iconInput" accept="image/jpeg, image/png, image/webp">
+      <div id="profileIconHelp" class="form-text">
+        JPEG, PNG and WEBP formats supported, Use a square aspect ratio for the best results.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="descriptionInput">Short Description</label>
+      <textarea type="text" class="form-control" id="descriptionInput" placeholder="Write a short description of yourself." maxlength="1000" spellcheck="true" rows="6"></textarea>
+      <div id="usernameHelp" class="form-text">
+        Description must be <1000 characters long.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="tagInput">Tags</label>
+      <input type="text" class="form-control" id="tagInput" minlength="1" maxlength="15">
+      <div id="tagHelp" class="form-text">
+        Tags must be 1 - 15 characters long.
+      </div>
+      <label class="form-label">Current Tags</label>
+      <div class="d-flex flex-row" id="currentTags"></div>
+      <div id="tagsHelp" class="form-text">
+        Click on a tag to remove it.
+      </div>
+    </div>
+    <div>
+      <label class="form-label">Links</label>
+      <div id="linksInput">
+        <div class="input-group link-input">
+          <input type="text" class="form-control" id="display-text" placeholder="Display text" minlength="1">
+          <input type="url" class="form-control" id="link-url" placeholder="Link URL">
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="add-link-btn" type="button" style="margin-top:5px;">Add Link</button>
+      <div id="linksHelp" class="form-text">
+        Links with no Display text will be ignored
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+    <div id="form-status"></div>
+    </form>
+    `
+    main.innerHTML = insert
+    tagSite.innerHTML = ""
+    side.innerHTML = ""
+
+    let tagInput = document.getElementById("tagInput")
+    tagInput.addEventListener("keydown", function(event) {
+      if (event.key === 'Enter'){
+        event.preventDefault()
+        const tag = document.createElement('button')
+        tag.innerHTML = tagInput.value
+        tag.setAttribute("class", "btn btn-info")
+        newTags.push(tagInput.value)
+        tag.setAttribute("onclick", `
+        event.preventDefault()
+        removeTag(this)
+        `)
+        tag.setAttribute("style", "margin-right: 5px;")
+        document.getElementById("currentTags").appendChild(tag)
+
+        tagInput.value = ""
+      }
+    })
+    document.getElementById("add-link-btn").addEventListener("click", function(event) {
+      event.preventDefault()
+      const input = document.createElement('div')
+      input.innerHTML = `
+      <input type="text" class="form-control" placeholder="Display text" minlength="1">
+      <input type="url" class="form-control" placeholder="Link URL">`
+      input.setAttribute("class", "input-group link-input")
+      document.getElementById("linksInput").appendChild(input)
+    })
+
+    const form = document.getElementById("new-user")
+    form.addEventListener("submit", function (event){
+      event.preventDefault()
+      let name_ = document.getElementById("nameInput").value
+      let password_ = document.getElementById("passwordCreate").value
+      let confirm_ = document.getElementById("passwordConfirm").value
+      let image_ = document.getElementById("iconInput").value
+      let description_ = document.getElementById("descriptionInput").value
+      let tags_ = newTags
+      let links_ = []
+      for (let i of document.getElementsByClassName("link-input")){
+        let displayText = i.firstElementChild.value
+        let linkURL = i.lastElementChild.value
+        if (displayText !== "" && linkURL !== ""){
+          links_.push(JSON.parse(`{"text": "${displayText}", "url": "${linkURL}"}`))
+        }
+      }
+      if (password_ === confirm_){
+        
+      } else {
+        const status = document.getElementById("form-status")
+        status.innerHTML = "<div class='alert alert-danger'>Passwords do not match</div>"
+      }
+    })
+
+}
+function removeTag(tag){
+  newTags = newTags.filter(function (element) {
+    return element !== tag.innerHTML
+  })
+  document.getElementById("currentTags").removeChild(tag)
+}
 
 
 document.getElementById('searchbar').addEventListener('submit', async function (event) {
@@ -347,6 +479,10 @@ document.getElementById('login-form').addEventListener("submit", async function 
       HTTP Error: ${response.status}
     </div>`
   }
+})
+document.getElementById('signup-btn').addEventListener("click", async function(event) {
+  event.preventDefault()
+  postUser()
 })
 
 document.getElementById('home-nav').addEventListener("click", async function(event) {

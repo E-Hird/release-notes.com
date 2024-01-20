@@ -10,7 +10,7 @@
 
     {   
         "name": "Mr Duck Sphere",
-        "password": "duk",
+        "password": "dukmaniscool",
         "image": "duckSphere.png",
         "tags": ["Gaming", "Household"],
         "description": "A very round duck",
@@ -18,7 +18,7 @@
     },
     {   
         "name": "cow",
-        "password": "moo",
+        "password": "mooooooo",
         "image": "cowProfile.png",
         "tags": ["Animal"],
         "description": "A bovine mammalian",
@@ -34,7 +34,7 @@
     },
     {   
         "name": "Bakery",
-        "password": "bred",
+        "password": "bredandcheese",
         "image": "Bakery.png",
         "tags": ["Bakery"],
         "description": "The place where bread is made.",
@@ -42,7 +42,7 @@
     },
     {   
         "name": "Older Cow",
-        "password": "mooo",
+        "password": "moooooooo",
         "image": "oldCowProfile.png",
         "tags": ["Animal", "Woman"],
         "description": "The mother of cow.",

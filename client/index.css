@@ -6,8 +6,8 @@
 #site-content {
     display: flex;
     position: absolute;
-    bottom: 0;
     top: 76px;
+    margin-bottom: 5vh;
     > div {
         margin: 1vw;
     }
@@ -165,9 +165,10 @@
 #login-buttons {
     display: flex;
     justify-content: flex-start;
-    margin: 1vw;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
     > * {
-        margin: 1vw;
+        margin-right: 1vw;
     }
 }
 
@@ -188,5 +189,13 @@
             height: 40px;
             width: 100%;
         }
+    }
+}
+
+#new-user {
+    display: flex;
+    flex-direction: column;
+    > div{
+        margin: 1vw;
     }
 }
