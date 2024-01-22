@@ -112,7 +112,7 @@ async function loadResult(name, type){
       }
       insert += "</div>"
       main.innerHTML = insert
-      document.getElementById("item-owner").addEventListener("dblclick", async function(event) {
+      document.getElementById("item-owner").addEventListener((window.width > 768) ? "dblclick" : "click", async function(event) {
         event.preventDefault()
         try{
           loadResult(item.owner, "user")
@@ -202,7 +202,7 @@ async function loadPreview(itemname, type) {
       })
     }
     if (type == "product"){
-      document.getElementById("owner-profile").addEventListener("dblclick", async function(event) {
+      document.getElementById("owner-profile").addEventListener((window.width > 768) ? "dblclick" : "click", async function(event) {
         event.preventDefault()
         try{
           loadResult(item.owner, "user")
@@ -270,7 +270,6 @@ async function displayProfile(){
   <div id="profile-buttons">
   <h5>${userData.name}</h5>
   <button id="view-profile" class="btn btn-secondary" data-bs-dismiss="offcanvas">View Profile</button>
-  <button id="edit-profile" class="btn btn-secondary" data-bs-dismiss="offcanvas">Edit Profile</button>
   <button id="logout-btn" class="btn btn-danger">Logout</button>
   </div>
   </div>`
@@ -347,10 +346,10 @@ async function postUser(){
       <label class="form-label" for="tagInput">Tags</label>
       <input type="text" class="form-control" id="tagInput" minlength="1" maxlength="15">
       <div id="tagHelp" class="form-text">
-        Tags must be 1 - 15 characters long.
+        Tags must be 1 - 15 characters long, Type a tag and press enter. You can have at most 10 tags.
       </div>
       <label class="form-label">Current Tags</label>
-      <div class="d-flex flex-row" id="currentTags"></div>
+      <div class="d-flex flex-row overflow-scroll" id="currentTags"></div>
       <div id="tagsHelp" class="form-text">
         Click on a tag to remove it.
       </div>
@@ -376,33 +375,7 @@ async function postUser(){
     tagSite.innerHTML = ""
     side.innerHTML = ""
 
-    let tagInput = document.getElementById("tagInput")
-    tagInput.addEventListener("keydown", function(event) {
-      if (event.key === 'Enter'){
-        event.preventDefault()
-        const tag = document.createElement('button')
-        tag.innerHTML = tagInput.value
-        tag.setAttribute("class", "btn btn-info")
-        newTags.push(tagInput.value)
-        tag.setAttribute("onclick", `
-        event.preventDefault()
-        removeTag(this)
-        `)
-        tag.setAttribute("style", "margin-right: 5px;")
-        document.getElementById("currentTags").appendChild(tag)
-
-        tagInput.value = ""
-      }
-    })
-    document.getElementById("add-link-btn").addEventListener("click", function(event) {
-      event.preventDefault()
-      const input = document.createElement('div')
-      input.innerHTML = `
-      <input type="text" class="form-control" placeholder="Display text" minlength="1">
-      <input type="url" class="form-control" placeholder="Link URL">`
-      input.setAttribute("class", "input-group link-input")
-      document.getElementById("linksInput").appendChild(input)
-    })
+    addFormFunctions()
 
     const form = document.getElementById("new-user")
     form.addEventListener("submit", async function (event){
@@ -421,6 +394,7 @@ async function postUser(){
           links_.push(`{"text": "${displayText}", "url": "${linkURL}"}`)
         }
       }
+      const status = document.getElementById("form-status")
       if (password_ === confirm_){
         let imageName = image_.slice(image_.lastIndexOf("\\")+1)
         console.log(imageName)
@@ -440,19 +414,169 @@ async function postUser(){
 
         const res = await fetch("/new-user", {
           method: "POST",
-          // headers: {
-          //   "Content-Type" : "multipart/form-data;"
-          // },
           body: formData
         })
-        console.log(res)
-        console.log(await res.body)
+        if (res.ok){
+          main.innerHTML = `<div class="alert alert-success">Account Created, Please sign in.</div>`
+          newTags = []
+        } else if(res.status === 409){
+          status.innerHTML = "<div class='alert alert-danger'>Username is Taken.</div>"
+        } else {
+          status.innerHTML = `<div class="alert alert-danger">Error: ${res.status + res.statusText}</div>`
+        }
       } else {
-        const status = document.getElementById("form-status")
-        status.innerHTML = "<div class='alert alert-danger'>Passwords do not match</div>"
+        status.innerHTML = "<div class='alert alert-danger'>Passwords do not match.</div>"
       }
     })
+}
+async function postProduct(){
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  if (sessionStorage.getItem("loggedIn") !== "true"){
+    main.innerHTML = "<div class='alert alert-warning'>You must be signed in to create a product.</div>"
+    tagSite.innerHTML = ""
+    side.innerHTML = ""
+    return
+  }
+  let insert = `
+  <h3>Sign Up</h3>
+  <form id="new-product">
+    <div>
+      <label class="form-label" for="nameInput">Product Name</label>
+      <input type="text" class="form-control" id="nameInput" placeholder="Name" maxlength="100" required>
+      <div id="productNameHelp" class="form-text">
+        Product Name must be <100 characters long.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="iconInput">Upload Product Thumbnail</label>
+      <input type="file" class="form-control" id="iconInput" accept="image/jpeg, image/png, image/webp">
+      <div id="productIconHelp" class="form-text">
+        JPEG, PNG and WEBP formats supported, Use a square aspect ratio for the best results.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="descriptionInput">Short Description</label>
+      <textarea type="text" class="form-control" id="descriptionInput" placeholder="Write a short description of the product." maxlength="1000" spellcheck="true" rows="6"></textarea>
+      <div id="usernameHelp" class="form-text">
+        Description must be <1000 characters long.
+      </div>
+    </div>
+    <div>
+      <label class="form-label" for="tagInput">Tags</label>
+      <input type="text" class="form-control" id="tagInput" minlength="1" maxlength="15">
+      <div id="tagHelp" class="form-text">
+        Tags must be 1 - 15 characters long, Type a tag and press enter. The product can have at most 10 tags.
+      </div>
+      <label class="form-label">Current Tags</label>
+      <div class="d-flex flex-row overflow-scroll" id="currentTags"></div>
+      <div id="tagsHelp" class="form-text">
+        Click on a tag to remove it.
+      </div>
+    </div>
+    <div>
+      <label class="form-label">Links</label>
+      <div id="linksInput">
+        <div class="input-group link-input">
+          <input type="text" class="form-control" id="display-text" placeholder="Display text" minlength="1">
+          <input type="url" class="form-control" id="link-url" placeholder="Link URL">
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="add-link-btn" type="button" style="margin-top:5px;">Add Link</button>
+      <div id="linksHelp" class="form-text">
+        Links with no Display text will be ignored
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Product</button>
+    <div id="form-status"></div>
+    </form>
+    `
+    main.innerHTML = insert
+    tagSite.innerHTML = ""
+    side.innerHTML = ""
 
+    addFormFunctions()
+
+    const form = document.getElementById("new-product")
+    form.addEventListener("submit", async function (event){
+      event.preventDefault()
+      let name_ = document.getElementById("nameInput").value
+      let image_ = document.getElementById("iconInput").value
+      let description_ = document.getElementById("descriptionInput").value
+      let owner_ = JSON.parse(sessionStorage.getItem("user")).name
+      console.log(owner_)
+      let tags_ = []
+      let links_ = []
+      for (let i of document.getElementsByClassName("link-input")){
+        let displayText = i.firstElementChild.value
+        let linkURL = i.lastElementChild.value
+        if (displayText !== "" && linkURL !== ""){
+          links_.push(`{"text": "${displayText}", "url": "${linkURL}"}`)
+        }
+      }
+      const status = document.getElementById("form-status")
+      
+      let imageName = image_.slice(image_.lastIndexOf("\\")+1)
+      console.log(imageName)
+
+      for (let i=0;i<newTags.length;i++){
+        tags_.push(`"${newTags[i]}"`)
+      }
+
+      const formData = new FormData()
+      const imageFile = document.getElementById("iconInput").files[0]
+      if (imageFile !== undefined)formData.append("imageFile", imageFile, imageFile.name)
+      formData.append("name", name_)
+      formData.append("tags", `[${tags_}]`)
+      formData.append("description", description_)
+      formData.append("links", `[${links_}]`)
+      formData.append("owner", owner_)
+      formData.append("extras", "[]")
+
+      const res = await fetch("/new-product", {
+        method: "POST",
+        body: formData
+      })
+      if (res.ok){
+        main.innerHTML = `<div class="alert alert-success">Product Created.</div>`
+        newTags = []
+      } else if(res.status === 409){
+        status.innerHTML = "<div class='alert alert-danger'>Product Name is Taken.</div>"
+      } else {
+        status.innerHTML = `<div class="alert alert-danger">Error: ${res.status + res.statusText}</div>`
+      }
+    })
+}
+
+function addFormFunctions(){
+  let tagInput = document.getElementById("tagInput")
+  tagInput.addEventListener("keydown", function(event) {
+    if (event.key === 'Enter'){
+      event.preventDefault()
+      if (!newTags.includes(tagInput.value) && newTags.length < 10){
+        const tag = document.createElement('button')
+        tag.innerHTML = tagInput.value
+        tag.setAttribute("class", "btn btn-info")
+        newTags.push(tagInput.value)
+        tag.setAttribute("onclick", `
+        event.preventDefault()
+        removeTag(this)
+        `)
+        tag.setAttribute("style", "margin-right: 5px;")
+        document.getElementById("currentTags").appendChild(tag)
+
+        tagInput.value = ""
+      }
+    }
+  })
+  document.getElementById("add-link-btn").addEventListener("click", function(event) {
+    event.preventDefault()
+    const input = document.createElement('div')
+    input.innerHTML = `
+    <input type="text" class="form-control" placeholder="Display text" minlength="1">
+    <input type="url" class="form-control" placeholder="Link URL">`
+    input.setAttribute("class", "input-group link-input")
+    document.getElementById("linksInput").appendChild(input)
+  })
 }
 function removeTag(tag){
   newTags = newTags.filter(function (element) {
@@ -523,6 +647,10 @@ document.getElementById('users-nav').addEventListener("click", async function(ev
   event.preventDefault()
   loadResults("", "users", "name")
   getTags('users')
+})
+document.getElementById('new-nav').addEventListener("click", async function(event) {
+  event.preventDefault()
+  postProduct()
 })
 
 document.addEventListener('DOMContentLoaded', async function (event) {

@@ -3,26 +3,27 @@ const app = express()
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-const { userInfo } = require('os')
 
 // Taken from refine example https://refine.dev/blog/how-to-multipart-upload/#example
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, __dirname + "/files");
+    cb(null, path.join(__dirname, '/files'))
   },
   filename: (req, file, cb) => {
-    let fn = file.originalname.split(path.extname(file.originalname))[0] + '-' + Date.now() + path.extname(file.originalname)
-    cb(null, fn);
-  },
-});
+    const fn = (file.originalname.split(path.extname(file.originalname))[0] + '-' + Date.now() + path.extname(file.originalname))
+    cb(null, fn)
+  }
+})
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage })
 
 const productFile = './products.json'
 const userFile = './users.json'
 
 const products = JSON.parse(fs.readFileSync(productFile))
 const users = JSON.parse(fs.readFileSync(userFile))
+
+app.use(express.static('client'))
 
 function checkTarget (target, term, type) {
   switch (type) {
@@ -47,21 +48,19 @@ function checkTarget (target, term, type) {
   return false
 }
 
-app.use(express.static('client'))
-
-class Product{
-  constructor(name_, image_, tags_, description_, links_, extras_){
+class Product {
+  constructor (name_, image_, tags_, description_, links_, owner_, extras_) {
     this.name = name_
     this.image = image_
     this.tags = tags_
     this.description = description_
     this.links = links_
-    this.owner = owner
+    this.owner = owner_
     this.extras = extras_
   }
 }
-class User{
-  constructor(name_, password_, image_, tags_, description_, links_){
+class User {
+  constructor (name_, password_, image_, tags_, description_, links_) {
     this.name = name_
     this.password = password_
     this.image = image_
@@ -99,21 +98,29 @@ app.get('/product', (req, res) => {
 })
 
 // POST a new product to the server
-app.post('/new-product', upload.any("imageFile"), (req, res) => {
+app.post('/new-product', upload.any('imageFile'), (req, res) => {
   console.log('New Product')
   const data = req.body
   let nameTaken = false
-  for (i of products){
-    if (data.name === i.name){
+  for (const i of products) {
+    if (data.name === i.name) {
       nameTaken = true
       break
     }
   }
-  if (nameTaken){
+  console.log(data.name)
+  console.log(data.tags)
+  console.log(data.description)
+  console.log(data.links)
+  console.log(data.owner)
+  console.log(data.extras)
+  console.log(req.files[0].filename)
+  const imageName = (req.files[0] !== undefined) ? req.files[0].filename : 'image'
+  if (nameTaken) {
+    if (req.files[0] !== undefined) { fs.unlinkSync(`./files/${imageName}`) }
     res.sendStatus(409)
   } else {
-    const imageName = (req.file !== undefined)?req.file.filename:"image"
-    const newProduct = new Product(data.name, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links), JSON.parse(data.extras))
+    const newProduct = new Product(data.name, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links), data.owner, JSON.parse(data.extras))
     products.push(newProduct)
     fs.writeFileSync(productFile, JSON.stringify(products))
     res.sendStatus(201)
@@ -150,20 +157,21 @@ app.get('/user', (req, res) => {
 })
 
 // POST a new user to the server
-app.post('/new-user', upload.any("imageFile"), (req, res) => {
+app.post('/new-user', upload.any('imageFile'), (req, res) => {
   console.log('New User')
   const data = req.body
   let nameTaken = false
-  for (i of users){
-    if (data.name === i.name){
+  for (const i of users) {
+    if (data.name === i.name) {
       nameTaken = true
       break
     }
   }
-  if (nameTaken){
+  const imageName = (req.files[0] !== undefined) ? req.files[0].filename : 'image'
+  if (nameTaken) {
+    if (req.files[0] !== undefined) { fs.unlinkSync(`./files/${imageName}`) }
     res.sendStatus(409)
   } else {
-    const imageName = (req.file !== undefined)?req.file.filename:"image"
     const newUser = new User(data.name, data.password, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links))
     users.push(newUser)
     fs.writeFileSync(userFile, JSON.stringify(users))
