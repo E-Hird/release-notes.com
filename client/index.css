@@ -139,9 +139,9 @@
             width: 100%;
             padding-left: 2vw;
         }
-        > #item-tags{
+        > #item-tags, #item-links{
             > * {
-                margin-left: 10px;
+                margin-right: 10px;
                 margin-bottom: 10px;
             }
             display: flex;

@@ -1,8 +1,28 @@
 const express = require('express')
 const app = express()
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
+const { userInfo } = require('os')
 
-const products = require('./products.json')
-const users = require('./users.json')
+// Taken from refine example https://refine.dev/blog/how-to-multipart-upload/#example
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, __dirname + "/files");
+  },
+  filename: (req, file, cb) => {
+    let fn = file.originalname.split(path.extname(file.originalname))[0] + '-' + Date.now() + path.extname(file.originalname)
+    cb(null, fn);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+const productFile = './products.json'
+const userFile = './users.json'
+
+const products = JSON.parse(fs.readFileSync(productFile))
+const users = JSON.parse(fs.readFileSync(userFile))
 
 function checkTarget (target, term, type) {
   switch (type) {
@@ -28,7 +48,28 @@ function checkTarget (target, term, type) {
 }
 
 app.use(express.static('client'))
-app.use(express.urlencoded())
+
+class Product{
+  constructor(name_, image_, tags_, description_, links_, extras_){
+    this.name = name_
+    this.image = image_
+    this.tags = tags_
+    this.description = description_
+    this.links = links_
+    this.owner = owner
+    this.extras = extras_
+  }
+}
+class User{
+  constructor(name_, password_, image_, tags_, description_, links_){
+    this.name = name_
+    this.password = password_
+    this.image = image_
+    this.tags = tags_
+    this.description = description_
+    this.links = links_
+  }
+}
 
 // GET list of products based on a set of tags and/or a search
 app.get('/products', (req, res) => {
@@ -58,17 +99,25 @@ app.get('/product', (req, res) => {
 })
 
 // POST a new product to the server
-app.post('/new-product', (req, res) => {
+app.post('/new-product', upload.any("imageFile"), (req, res) => {
   console.log('New Product')
-  console.log(req.body)
-  data = req.body
-  const n_name = data['new-name']
-  const n_tags = data['new-tags']
-  const n_thumbnail = data['new-thumbnail']
-  const n_description = data['new-description']
-  const n_links = data['new-links']
-  const n_owner = data['new-owner']
-  const n_extras = data['new-name']
+  const data = req.body
+  let nameTaken = false
+  for (i of products){
+    if (data.name === i.name){
+      nameTaken = true
+      break
+    }
+  }
+  if (nameTaken){
+    res.sendStatus(409)
+  } else {
+    const imageName = (req.file !== undefined)?req.file.filename:"image"
+    const newProduct = new Product(data.name, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links), JSON.parse(data.extras))
+    products.push(newProduct)
+    fs.writeFileSync(productFile, JSON.stringify(products))
+    res.sendStatus(201)
+  }
 })
 
 // GET List of users/companies
@@ -98,6 +147,28 @@ app.get('/user', (req, res) => {
     }
   }
   if (!found) res.sendStatus(404)
+})
+
+// POST a new user to the server
+app.post('/new-user', upload.any("imageFile"), (req, res) => {
+  console.log('New User')
+  const data = req.body
+  let nameTaken = false
+  for (i of users){
+    if (data.name === i.name){
+      nameTaken = true
+      break
+    }
+  }
+  if (nameTaken){
+    res.sendStatus(409)
+  } else {
+    const imageName = (req.file !== undefined)?req.file.filename:"image"
+    const newUser = new User(data.name, data.password, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links))
+    users.push(newUser)
+    fs.writeFileSync(userFile, JSON.stringify(users))
+    res.sendStatus(201)
+  }
 })
 
 app.get('/tags', (req, res) => {

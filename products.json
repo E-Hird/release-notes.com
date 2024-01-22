@@ -6,7 +6,7 @@
         "description": "productdescription",
         "links": [{"text": "link Text", "href":"/"}],
         "owner": "username",
-        "extras": ["blogPost.txt", "gallery.png"]
+        "extras": []
     },
     
     {

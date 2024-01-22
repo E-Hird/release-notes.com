@@ -95,7 +95,7 @@ async function loadResult(name, type){
       <div id="item-links">
       `
       for (let i of item.links) {
-        insert += `<a class="link-secondary" href="${i.href}">${i.text}</a>`
+        insert += `<a class="link-secondary" href="${i.url}">${i.text}</a>`
       }
       insert += `</div>
       <h5 class="label">Tags</h5>
@@ -405,24 +405,48 @@ async function postUser(){
     })
 
     const form = document.getElementById("new-user")
-    form.addEventListener("submit", function (event){
+    form.addEventListener("submit", async function (event){
       event.preventDefault()
       let name_ = document.getElementById("nameInput").value
       let password_ = document.getElementById("passwordCreate").value
       let confirm_ = document.getElementById("passwordConfirm").value
       let image_ = document.getElementById("iconInput").value
       let description_ = document.getElementById("descriptionInput").value
-      let tags_ = newTags
+      let tags_ = []
       let links_ = []
       for (let i of document.getElementsByClassName("link-input")){
         let displayText = i.firstElementChild.value
         let linkURL = i.lastElementChild.value
         if (displayText !== "" && linkURL !== ""){
-          links_.push(JSON.parse(`{"text": "${displayText}", "url": "${linkURL}"}`))
+          links_.push(`{"text": "${displayText}", "url": "${linkURL}"}`)
         }
       }
       if (password_ === confirm_){
-        
+        let imageName = image_.slice(image_.lastIndexOf("\\")+1)
+        console.log(imageName)
+
+        for (let i=0;i<newTags.length;i++){
+          tags_.push(`"${newTags[i]}"`)
+        }
+
+        const formData = new FormData()
+        const imageFile = document.getElementById("iconInput").files[0]
+        if (imageFile !== undefined)formData.append("imageFile", imageFile, imageFile.name)
+        formData.append("name", name_)
+        formData.append("password", password_)
+        formData.append("tags", `[${tags_}]`)
+        formData.append("description", description_)
+        formData.append("links", `[${links_}]`)
+
+        const res = await fetch("/new-user", {
+          method: "POST",
+          // headers: {
+          //   "Content-Type" : "multipart/form-data;"
+          // },
+          body: formData
+        })
+        console.log(res)
+        console.log(await res.body)
       } else {
         const status = document.getElementById("form-status")
         status.innerHTML = "<div class='alert alert-danger'>Passwords do not match</div>"
