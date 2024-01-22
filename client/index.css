@@ -79,8 +79,10 @@
     > * {
         width: 200px;
         flex-grow: 1;
-        aspect-ratio: 1;
         margin: 2.5%;
+        > .card-img-top {
+            aspect-ratio: 1;
+        }
     }
     > .blank-result {
         height: 0px;
@@ -95,6 +97,7 @@
     > #preview-image {
         width: 20vw;
         height: 20vw;
+        aspect-ratio: 1;
     }
     > #preview-description {
         width: 20vw;
@@ -160,6 +163,10 @@
 .owner-icon {
     width: 40px;
     height: 40px;
+}
+
+.object-fit-fill {
+    aspect-ratio: 1;
 }
 
 #login-buttons {
