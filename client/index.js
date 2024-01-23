@@ -228,7 +228,7 @@ async function loadPreview(itemname, type) {
 }
 
 async function getTags(type){
-  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%;">'
   let tagRes = await fetch(`/tags?type=${type}`)
   let tagList = await tagRes.json()
   let insert = ''
@@ -663,3 +663,4 @@ document.addEventListener('DOMContentLoaded', async function (event) {
   let page_ = sessionStorage.getItem("page")
   loadPage(page_)
 })
+// 666 OH GOD

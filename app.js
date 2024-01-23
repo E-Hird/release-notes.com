@@ -108,13 +108,6 @@ app.post('/new-product', upload.any('imageFile'), (req, res) => {
       break
     }
   }
-  console.log(data.name)
-  console.log(data.tags)
-  console.log(data.description)
-  console.log(data.links)
-  console.log(data.owner)
-  console.log(data.extras)
-  console.log(req.files[0].filename)
   const imageName = (req.files[0] !== undefined) ? req.files[0].filename : 'image'
   if (nameTaken) {
     if (req.files[0] !== undefined) { fs.unlinkSync(`./files/${imageName}`) }
