@@ -13,7 +13,7 @@ const user = 0
 
 async function loadResults(search, type, method, target=main){
   sessionStorage.setItem("page", (target == main) ? type:user )
-  target.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  target.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
   let searchRes = await fetch(`http://127.0.0.1:8080/${type}?method=${method}&search=${search}`)
   if (searchRes.ok) {
     results = await searchRes.json()
@@ -64,7 +64,7 @@ async function loadResults(search, type, method, target=main){
 }
 
 async function loadResult(name, type){
-  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
   const itemRes = await fetch(`/${type}?name=${name}`)
   if (itemRes.ok){
     let item = await itemRes.json()
@@ -74,7 +74,7 @@ async function loadResult(name, type){
         <h4 class="item-title">${item.name}</h4>
         <h5 class="label">Image</h5>
         <div class="item-image"> 
-            <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
+            <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" onerror="this.onerror=null;this.src='missingImage.png'">
         </div>
       </div>
       <div id="item-details">`
@@ -154,7 +154,7 @@ async function loadResult(name, type){
 }
 
 async function loadPreview(itemname, type) {
-  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;">'
+  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;"></div>'
   const itemRes = await fetch(`/${type}?name=${itemname}`)
   if (itemRes.ok){
     let item = await itemRes.json()
@@ -163,7 +163,7 @@ async function loadPreview(itemname, type) {
       <h4 id="preview-title">${item.name}</h4>
       <h5 class="label">Image</h5>
       <div id="preview-image"> 
-          <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" width="100%" onerror="this.onerror=null;this.src='missingImage.png'";>
+          <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" onerror="this.onerror=null;this.src='missingImage.png'">
       </div>`
       if (type == "product"){
         let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
@@ -183,7 +183,7 @@ async function loadPreview(itemname, type) {
       insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
     }
     insert += `</div>
-      <a type="button" id="see-more">See more...</button>
+      <a href="#" id="see-more">See more...</a>
       </div>`
     side.innerHTML = insert
 
@@ -228,7 +228,7 @@ async function loadPreview(itemname, type) {
 }
 
 async function getTags(type){
-  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%;">'
+  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%;"></div>'
   let tagRes = await fetch(`/tags?type=${type}`)
   let tagList = await tagRes.json()
   let insert = ''
@@ -259,7 +259,7 @@ async function displayProfile(){
   console.log("logged in")
   let userData = JSON.parse(sessionStorage.getItem("user"))
   document.getElementById("profile").innerHTML = `
-  <a class="btn user-profile" id="profile-nav" type="button" data-bs-toggle="offcanvas" href="#profile-offcanvas">
+  <a class="btn user-profile" id="profile-nav" data-bs-toggle="offcanvas" href="#profile-offcanvas">
   <img src="/file?src=${userData.image}" class="owner-icon border rounded-circle" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'">
   <h5>${userData.name}</h5>
   </a>`
@@ -337,7 +337,7 @@ async function postUser(){
     </div>
     <div>
       <label class="form-label" for="descriptionInput">Short Description</label>
-      <textarea type="text" class="form-control" id="descriptionInput" placeholder="Write a short description of yourself." maxlength="1000" spellcheck="true" rows="6"></textarea>
+      <textarea class="form-control" id="descriptionInput" placeholder="Write a short description of yourself." maxlength="1000" spellcheck="true" rows="6"></textarea>
       <div id="usernameHelp" class="form-text">
         Description must be <1000 characters long.
       </div>
@@ -456,7 +456,7 @@ async function postProduct(){
     </div>
     <div>
       <label class="form-label" for="descriptionInput">Short Description</label>
-      <textarea type="text" class="form-control" id="descriptionInput" placeholder="Write a short description of the product." maxlength="1000" spellcheck="true" rows="6"></textarea>
+      <textarea class="form-control" id="descriptionInput" placeholder="Write a short description of the product." maxlength="1000" spellcheck="true" rows="6"></textarea>
       <div id="usernameHelp" class="form-text">
         Description must be <1000 characters long.
       </div>

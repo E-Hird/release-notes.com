@@ -166,6 +166,7 @@
 }
 
 .object-fit-fill {
+    width: 100%;
     aspect-ratio: 1;
 }
 

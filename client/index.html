@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><img src="Logo.ico" alt="Logo" width="50vw"></a>
+            <a class="navbar-brand" href="/"><img src="Logo.ico" alt="Logo" width="50"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,7 +32,7 @@
                     </li>
                 </ul>
                 <div id="profile">
-                    <a class="btn" type="button" data-bs-toggle="offcanvas" href="#profile-offcanvas">Login / Sign up</a>
+                    <a class="btn" data-bs-toggle="offcanvas" href="#profile-offcanvas">Login / Sign up</a>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
             <form id="login-form">
                 <!-- Taken from Bootstrap example https://getbootstrap.com/docs/5.3/forms/floating-labels/#example -->
                 <div class="form-floating mb-3">
-                    <input type="username" class="form-control" id="userInput" placeholder="Username" maxlength="20" required>
+                    <input type="text" class="form-control" id="userInput" placeholder="Username" maxlength="20" required>
                     <label for="userInput">Username</label>
                 </div>
                 <div class="form-floating">
@@ -68,7 +68,7 @@
                 <input class="form-control" type="search" id="search-input" placeholder="Search">
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
-            <div id="tags"></div>
+            <div id="tags" class="d-flex flex-row overflow-x-scroll"></div>
             <div id="results" class="overflow-y-scroll"></div>
         </div>
         <div class="container-fluid" id="side-content">
