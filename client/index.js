@@ -306,7 +306,7 @@ async function loadPage(page){
 }
 
 async function postUser(){
-  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
   let insert = `
   <h3>Sign Up</h3>
   <form id="new-user">
@@ -396,6 +396,7 @@ async function postUser(){
       }
       const status = document.getElementById("form-status")
       if (password_ === confirm_){
+        status.innerHTML = `<div class="alert alert-info"><div class="spinner-border" role="status"></div>Registering User...</div>`
         let imageName = image_.slice(image_.lastIndexOf("\\")+1)
         console.log(imageName)
 
@@ -514,6 +515,7 @@ async function postProduct(){
         }
       }
       const status = document.getElementById("form-status")
+      status.innerHTML = `<div class="alert alert-info" style="display:flex;align-items:center;"><div class="spinner-border" role="status"></div>Uploading Product...</div>`
       
       let imageName = image_.slice(image_.lastIndexOf("\\")+1)
       console.log(imageName)
@@ -663,4 +665,3 @@ document.addEventListener('DOMContentLoaded', async function (event) {
   let page_ = sessionStorage.getItem("page")
   loadPage(page_)
 })
-// 666 OH GOD

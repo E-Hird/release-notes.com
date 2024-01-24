@@ -114,8 +114,10 @@ app.post('/new-product', upload.any('imageFile'), (req, res) => {
     res.sendStatus(409)
   } else {
     const newProduct = new Product(data.name, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links), data.owner, JSON.parse(data.extras))
-    products.push(newProduct)
-    fs.writeFileSync(productFile, JSON.stringify(products))
+    if (data.test === undefined) {
+      products.push(newProduct)
+      fs.writeFileSync(productFile, JSON.stringify(products))
+    }
     res.sendStatus(201)
   }
 })
@@ -166,8 +168,10 @@ app.post('/new-user', upload.any('imageFile'), (req, res) => {
     res.sendStatus(409)
   } else {
     const newUser = new User(data.name, data.password, imageName, JSON.parse(data.tags), data.description, JSON.parse(data.links))
-    users.push(newUser)
-    fs.writeFileSync(userFile, JSON.stringify(users))
+    if (data.test === undefined) {
+      users.push(newUser)
+      fs.writeFileSync(userFile, JSON.stringify(users))
+    }
     res.sendStatus(201)
   }
 })

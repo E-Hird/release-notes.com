@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest",
-    "pretest": "eslint *.js --fix"
+    "pretest": "eslint app.js server.js --fix",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
