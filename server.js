@@ -1,2 +1,3 @@
 const app = require('./app')
-app.listen(8080)
+const PORT = 8080
+app.listen(PORT)

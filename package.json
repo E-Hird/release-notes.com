@@ -1,6 +1,6 @@
 {
   "name": "release-notes.com",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Webapp that compiles info about products into a navigable site.",
   "main": "server.js",
   "scripts": {

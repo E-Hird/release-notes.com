@@ -1,25 +1,26 @@
+// Store the elements that will be updated most often
 const main = document.getElementById('results')
 const tagSite = document.getElementById('tags')
 const side = document.getElementById('preview-area')
 
+// Initialize the 
 let results = []
 let products = []
 let tagButtons = []
 
-
 let newTags = []
 
-const user = 0
 
+// Load search results according to the search term, the tag selected or the user selected
 async function loadResults(search, type, method, target=main){
-  sessionStorage.setItem("page", (target == main) ? type:user )
-  target.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
-  let searchRes = await fetch(`http://127.0.0.1:8080/${type}?method=${method}&search=${search}`)
+  sessionStorage.setItem("page", (target === main) ? type:"user" ) // Store the current page for when the page is reloaded
+  target.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>' // Display loading status
+  let searchRes = await fetch(`/${type}?method=${method}&search=${search}`) // Request the search results
   if (searchRes.ok) {
     results = await searchRes.json()
-    let insert = '<div class="grid">\n'
-    let defaultImage = (type=='products') ? "missingImage.png" : "defaultIcon.png"
-    for (let i of results) {
+    let insert = '<div class="grid">\n' // Initialize the html insert
+    let defaultImage = (type=='products') ? "missingImage.png" : "defaultIcon.png" // Set the default image if the image is missing
+    for (let i of results) { // Add a card containing name and image for each result
       insert += `<div class="card product-card">
             <img src="/file?src=${i.image}" class="card-img-top" alt="Missing Thumbnail: ${i.name}" onerror="this.onerror=null;this.src='${defaultImage}'">
             <div class="card-body">
@@ -28,14 +29,14 @@ async function loadResults(search, type, method, target=main){
             </div>  
             `
     }
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 4; i++) { // Add blank results to make sure all cards are uniform size
       insert += '<div class="blank-result"></div>'
     }
     insert += '\n</div>'
     target.innerHTML = insert
-    products = document.getElementsByClassName('product-card')
+    products = document.getElementsByClassName('product-card') // Add functionality to each card
     for (let i = 0; i < products.length; i++) {
-      products[i].addEventListener('click', async function (event) {
+      products[i].addEventListener('click', async function (event) { // If clicked show a preview if possible, if not open the result
         event.preventDefault()
         try{
           let type_ = type.slice(0, -1)
@@ -45,17 +46,17 @@ async function loadResults(search, type, method, target=main){
             loadPreview(results[i].name, type_)
           }
         } catch(e){
-          //alert(e)
+          
           console.log(e.name + ": " + e.message)
         } 
       })
-      products[i].addEventListener('dblclick', async function (event) {
+      products[i].addEventListener('dblclick', async function (event) { // If double clicked open the result page
         event.preventDefault()
         try{
           let type_ = type.slice(0, -1)
           loadResult(results[i].name, type_)
         } catch(e){
-          //alert(e)
+          
           console.log(e.name + ": " + e.message)
         } 
       })
@@ -63,11 +64,13 @@ async function loadResults(search, type, method, target=main){
   }
 }
 
+// Load the result page for a named result
 async function loadResult(name, type){
-  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
-  const itemRes = await fetch(`/${type}?name=${name}`)
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>' // Show loading status
+  const itemRes = await fetch(`/${type}?name=${name}`) // Request the item's details
   if (itemRes.ok){
     let item = await itemRes.json()
+    // Insert the following html to display the item
     let insert = `<div id="item-page">
       <div id="item-display">
         <h5 class="label">Name</h5>
@@ -78,8 +81,8 @@ async function loadResult(name, type){
         </div>
       </div>
       <div id="item-details">`
-      if (type == 'product'){
-        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
+      if (type == 'product'){ // Display the owner if the item is a product
+        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json() // Request the image reference for the owner
         let ownerIcon = ownerData.image
         insert += `
         <h5 class="label">Creator</h5>
@@ -94,14 +97,14 @@ async function loadResult(name, type){
       <h5 class="label">Links</h5>
       <div id="item-links">
       `
-      for (let i of item.links) {
+      for (let i of item.links) { // Insert each link
         insert += `<a class="link-secondary" href="${i.url}">${i.text}</a>`
       }
       insert += `</div>
       <h5 class="label">Tags</h5>
       <div id="item-tags">
       `
-    for (let i of item.tags) {
+    for (let i of item.tags) { // Insert each tag
       insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
     }
     insert += `</div></div>`
@@ -113,15 +116,14 @@ async function loadResult(name, type){
       insert += "</div>"
       main.innerHTML = insert
       document.getElementById("item-owner").addEventListener((window.width > 768) ? "dblclick" : "click", async function(event) {
-        event.preventDefault()
+        event.preventDefault() // Load the Owner's result page if clicked/double clicked
         try{
           loadResult(item.owner, "user")
         } catch(e) {
-          //alert(e)
           console.log(e.name + ": " + e.message)
         }
       })
-    } else if (type == "user"){
+    } else if (type == "user"){ // List the products owned by the user
       insert += `<h5 class="label" style="margin-left: 3vw !important; margin-top: 3vw; font-size:x-large">Products</h5>
       <div id="owner-products"></div>`
       main.innerHTML = insert
@@ -130,34 +132,22 @@ async function loadResult(name, type){
     }
     side.innerHTML = ""
     tagSite.innerHTML = ""
-
+    // Store the current page for if the page is reloaded
     sessionStorage.setItem("page", type)
     sessionStorage.setItem("item", item.name)
 
-    tagButtons = document.getElementsByClassName('tag-btn')
-    for (let i = 0; i < tagButtons.length; i++) {
-      tagButtons[i].addEventListener('click', async function (event) {
-        event.preventDefault()
-        try {
-          const tag = tagButtons[i].innerHTML
-          loadResults(tag, `${type}s`, 'tags')
-          getTags(`${type}s`)
-        } catch (e) {
-          //alert(e)
-          console.log(e.name + ": " + e.message)
-        }
-      })
-    }
+    activateTagButtons(`${type}s`) // Add function to the tag buttons
   } else {
     alert(`Product not found`)
   }
 }
 
+// Load a preview of a result
 async function loadPreview(itemname, type) {
-  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;"></div>'
-  const itemRes = await fetch(`/${type}?name=${itemname}`)
+  side.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 35%; margin-top: 50%;"></div>' // Show loading status
+  const itemRes = await fetch(`/${type}?name=${itemname}`) // Request the details of the item
   if (itemRes.ok){
-    let item = await itemRes.json()
+    let item = await itemRes.json() // Insert the html below
     let insert = `<div id="preview">
       <h5 class="label">Name</h5>
       <h4 id="preview-title">${item.name}</h4>
@@ -165,8 +155,8 @@ async function loadPreview(itemname, type) {
       <div id="preview-image"> 
           <img class="object-fit-fill border rounded" src="/file?src=${item.image}" alt="Missing Thumbnail: ${item.name}" onerror="this.onerror=null;this.src='missingImage.png'">
       </div>`
-      if (type == "product"){
-        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json()
+      if (type == "product"){ // Display the owner if the item is a product
+        let ownerData = await (await fetch(`/user?name=${item.owner}`)).json() // Request the image reference for the owner
         let ownerIcon = ownerData.image
         insert += `<h5 class="label">Creator</h5>
         <div id="owner-profile" class="user-profile">
@@ -179,7 +169,7 @@ async function loadPreview(itemname, type) {
       <h5 class="label">Tags</h5>
       <div id="preview-tags">
       `
-    for (let i of item.tags) {
+    for (let i of item.tags) { // Insert each of the tags
       insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
     }
     insert += `</div>
@@ -187,83 +177,75 @@ async function loadPreview(itemname, type) {
       </div>`
     side.innerHTML = insert
 
-    tagButtons = document.getElementsByClassName('tag-btn')
-    for (let i = 0; i < tagButtons.length; i++) {
-      tagButtons[i].addEventListener('click', async function (event) {
-        event.preventDefault()
-        try {
-          const tag = tagButtons[i].innerHTML
-          loadResults(tag, `${type}s`, 'tags')
-          getTags(`${type}s`)
-        } catch (e) {
-          //alert(e)
-          console.log(e.name + ": " + e.message)
-        }
-      })
-    }
-    if (type == "product"){
+    activateTagButtons(`${type}s`) // Add function to the tag buttons
+    if (type == "product"){ // Load the Owner result page if the owner icon is clicked/double clicked
       document.getElementById("owner-profile").addEventListener((window.width > 768) ? "dblclick" : "click", async function(event) {
         event.preventDefault()
         try{
           loadResult(item.owner, "user")
         } catch(e) {
-          //alert(e)
           console.log(e.name + ": " + e.message)
         }
       })
     }
-    document.getElementById("see-more").addEventListener("click", async function(event) {
+    document.getElementById("see-more").addEventListener("click", async function(event) { // Load the result page for the item being previewed
       event.preventDefault()
       try{
         loadResult(item.name, type)
       } catch(e) {
-        //alert(e)
-          console.log(e.name + ": " + e.message)
+        console.log(e.name + ": " + e.message)
       }
     })
-  } else {
+  } else { // If the item does not exist display this in the div
     insert = `Item not found`
     side.innerHTML = insert
   }
 }
 
+// Load a list of tags associated with one entity type
 async function getTags(type){
-  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%;"></div>'
-  let tagRes = await fetch(`/tags?type=${type}`)
+  tagSite.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%;"></div>' // Show loading status
+  let tagRes = await fetch(`/tags?type=${type}`) // Request the list of tags for one entity type
   let tagList = await tagRes.json()
-  let insert = ''
+  let insert = '' // Initialize the html to be inserted
   if (tagRes.ok) {
-    for (let i of tagList) {
+    for (let i of tagList) { // Insert each tag button
       insert += `<button type="button" class="btn btn-outline-secondary tag-btn">${i}</button>`
     }
   }
   tagSite.innerHTML = insert
-
-  tagButtons = document.getElementsByClassName('tag-btn')
+  activateTagButtons(type, "getTags") // Add function to tag buttons
+}
+// Make the tag buttons request results
+function activateTagButtons(type, from="results"){
+  tagButtons = document.getElementsByClassName('tag-btn') // Get all elements which are tag buttons
   for (let i = 0; i < tagButtons.length; i++) {
-    tagButtons[i].addEventListener('click', async function (event) {
+    tagButtons[i].addEventListener('click', async function (event) { // When a tag button is clicked load the results with that tag
       event.preventDefault()
       try {
         const tag = tagButtons[i].innerHTML
         loadResults(tag, type, 'tags')
-        getTags(type)
+        if (from !== "getTags"){ // Prevent an infinite loop
+          getTags(type)
+        }
       } catch (e) {
-        //alert(e)
         console.log(e.name + ": " + e.message)
       }
     })
   }
 }
 
+// Display the profile of a user if they are signed in
 async function displayProfile(){
   console.log("logged in")
-  let userData = JSON.parse(sessionStorage.getItem("user"))
+  let userData = JSON.parse(sessionStorage.getItem("user")) // Get the info of the user that is signed in
+  // Change the html of the login nav
   document.getElementById("profile").innerHTML = `
   <a class="btn user-profile" id="profile-nav" data-bs-toggle="offcanvas" href="#profile-offcanvas">
   <img src="/file?src=${userData.image}" class="owner-icon border rounded-circle" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'">
   <h5>${userData.name}</h5>
   </a>`
-  document.getElementById("profile-title").innerHTML = "Profile"
+  document.getElementById("profile-title").innerHTML = "Profile" // Change the html of the profile offcanvas
   document.getElementById("profile-body").innerHTML = `
   <div id="profile-short">
   <img src="/file?src=${userData.image}" class="owner-icon border rounded" alt="Missing Icon" onerror="this.onerror=null;this.src='defaultIcon.png'" style="width:180px;height:180px;">
@@ -274,21 +256,22 @@ async function displayProfile(){
   </div>
   </div>`
 
-  document.getElementById("view-profile").addEventListener("click", () => {
+  document.getElementById("view-profile").addEventListener("click", () => { // Display teh result page of the logged in user
     loadResult(userData.name, "user")
   })
-  document.getElementById("logout-btn").addEventListener("click", () => {
-    sessionStorage.setItem("loggedIn", "false")
-    sessionStorage.setItem("user", "")
-    sessionStorage.setItem("page", "products")
-    location.reload()
+  document.getElementById("logout-btn").addEventListener("click", () => { // Logout the current user
+    sessionStorage.setItem("loggedIn", "false") // Set logged in status to false
+    sessionStorage.setItem("user", "") // Remove the stored user data
+    sessionStorage.setItem("page", "products") // Set the current webpage back to the default
+    location.reload() // Reload the site to force the visual changes
   })
 }
 
+// Load the current page when reloading the site
 async function loadPage(page){
   switch (page){
     case "user":
-      //Rollover to do the same as product
+      //Roll over to do the same as product
     case "product":
       loadResult(sessionStorage.getItem("item"), page)
       break;
@@ -305,8 +288,10 @@ async function loadPage(page){
   }
 }
 
+// Load the form to register as a new user
 async function postUser(){
-  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>'
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;"></div>' // Show Loading Status
+  // Insert the form html
   let insert = `
   <h3>Sign Up</h3>
   <form id="new-user">
@@ -375,10 +360,10 @@ async function postUser(){
     tagSite.innerHTML = ""
     side.innerHTML = ""
 
-    addFormFunctions()
+    addFormFunctions() // Make the tags input and Links input work
 
     const form = document.getElementById("new-user")
-    form.addEventListener("submit", async function (event){
+    form.addEventListener("submit", async function (event){ // Make a POST request for a new user when clicked the submit button
       event.preventDefault()
       let name_ = document.getElementById("nameInput").value
       let password_ = document.getElementById("passwordCreate").value
@@ -387,7 +372,7 @@ async function postUser(){
       let description_ = document.getElementById("descriptionInput").value
       let tags_ = []
       let links_ = []
-      for (let i of document.getElementsByClassName("link-input")){
+      for (let i of document.getElementsByClassName("link-input")){ // Add each of the links to the links_ array
         let displayText = i.firstElementChild.value
         let linkURL = i.lastElementChild.value
         if (displayText !== "" && linkURL !== ""){
@@ -395,49 +380,50 @@ async function postUser(){
         }
       }
       const status = document.getElementById("form-status")
-      if (password_ === confirm_){
+      if (password_ === confirm_){ // Only submit the POST request if the password fields match
         status.innerHTML = `<div class="alert alert-info"><div class="spinner-border" role="status"></div>Registering User...</div>`
-        let imageName = image_.slice(image_.lastIndexOf("\\")+1)
-        console.log(imageName)
 
         for (let i=0;i<newTags.length;i++){
           tags_.push(`"${newTags[i]}"`)
         }
 
-        const formData = new FormData()
+        const formData = new FormData() // Submit the data as a form
         const imageFile = document.getElementById("iconInput").files[0]
-        if (imageFile !== undefined)formData.append("imageFile", imageFile, imageFile.name)
+        if (imageFile !== undefined)formData.append("imageFile", imageFile, imageFile.name) // Only submit an image if the image field is populated
         formData.append("name", name_)
         formData.append("password", password_)
         formData.append("tags", `[${tags_}]`)
         formData.append("description", description_)
         formData.append("links", `[${links_}]`)
 
-        const res = await fetch("/new-user", {
+        const res = await fetch("/new-user", { // Send the POST request
           method: "POST",
           body: formData
         })
-        if (res.ok){
+        if (res.ok){ // Show a success using success alert
           main.innerHTML = `<div class="alert alert-success">Account Created, Please sign in.</div>`
           newTags = []
-        } else if(res.status === 409){
+        } else if(res.status === 409){ // If a user exists with the username already display this
           status.innerHTML = "<div class='alert alert-danger'>Username is Taken.</div>"
-        } else {
+        } else { // If there is another error display it
           status.innerHTML = `<div class="alert alert-danger">Error: ${res.status + res.statusText}</div>`
         }
-      } else {
+      } else { // If the passwords do not match display this
         status.innerHTML = "<div class='alert alert-danger'>Passwords do not match.</div>"
       }
     })
 }
+
+// Load the form to create a new product
 async function postProduct(){
-  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">'
-  if (sessionStorage.getItem("loggedIn") !== "true"){
+  main.innerHTML = '<div class="spinner-border" role="status" style="margin-left: 50%; margin-top: 20%;">' // Show loading status
+  if (sessionStorage.getItem("loggedIn") !== "true"){ // Only allow a user to create a product if they are logged in
     main.innerHTML = "<div class='alert alert-warning'>You must be signed in to create a product.</div>"
     tagSite.innerHTML = ""
     side.innerHTML = ""
     return
   }
+  // Display the form html
   let insert = `
   <h3>Sign Up</h3>
   <form id="new-product">
@@ -495,10 +481,10 @@ async function postProduct(){
     tagSite.innerHTML = ""
     side.innerHTML = ""
 
-    addFormFunctions()
+    addFormFunctions() // Make the tags input and links input work
 
     const form = document.getElementById("new-product")
-    form.addEventListener("submit", async function (event){
+    form.addEventListener("submit", async function (event){ // POST request to make a new product when the submit button is pressed
       event.preventDefault()
       let name_ = document.getElementById("nameInput").value
       let image_ = document.getElementById("iconInput").value
@@ -507,18 +493,15 @@ async function postProduct(){
       console.log(owner_)
       let tags_ = []
       let links_ = []
-      for (let i of document.getElementsByClassName("link-input")){
+      for (let i of document.getElementsByClassName("link-input")){ // Add each of the links to the links_ array
         let displayText = i.firstElementChild.value
         let linkURL = i.lastElementChild.value
         if (displayText !== "" && linkURL !== ""){
           links_.push(`{"text": "${displayText}", "url": "${linkURL}"}`)
         }
       }
-      const status = document.getElementById("form-status")
+      const status = document.getElementById("form-status") // Show that the product is being uploaded
       status.innerHTML = `<div class="alert alert-info" style="display:flex;align-items:center;"><div class="spinner-border" role="status"></div>Uploading Product...</div>`
-      
-      let imageName = image_.slice(image_.lastIndexOf("\\")+1)
-      console.log(imageName)
 
       for (let i=0;i<newTags.length;i++){
         tags_.push(`"${newTags[i]}"`)
@@ -549,119 +532,120 @@ async function postProduct(){
     })
 }
 
+// Make the tags input and links input do things
 function addFormFunctions(){
   let tagInput = document.getElementById("tagInput")
-  tagInput.addEventListener("keydown", function(event) {
+  tagInput.addEventListener("keydown", function(event) { // When typing a tag user can press enter to submit it as a tag
     if (event.key === 'Enter'){
       event.preventDefault()
-      if (!newTags.includes(tagInput.value) && newTags.length < 10){
+      if (!newTags.includes(tagInput.value) && newTags.length < 10){ // Only add the tag if it doesn't already exist
         const tag = document.createElement('button')
         tag.innerHTML = tagInput.value
-        tag.setAttribute("class", "btn btn-info")
-        newTags.push(tagInput.value)
+        tag.setAttribute("class", "btn btn-info") // Set the text of the button to the name of the tag
+        newTags.push(tagInput.value) // Set the function of the button to remove the tag
         tag.setAttribute("onclick", `
         event.preventDefault()
         removeTag(this)
         `)
         tag.setAttribute("style", "margin-right: 5px;")
-        document.getElementById("currentTags").appendChild(tag)
+        document.getElementById("currentTags").appendChild(tag) // Add the tag button to the div
 
-        tagInput.value = ""
+        tagInput.value = "" // Reset the tag input
       }
     }
   })
-  document.getElementById("add-link-btn").addEventListener("click", function(event) {
+  document.getElementById("add-link-btn").addEventListener("click", function(event) { // Add a new link field when te button is pressed
     event.preventDefault()
-    const input = document.createElement('div')
+    const input = document.createElement('div') // Make a Bootstrap input group
     input.innerHTML = `
     <input type="text" class="form-control" placeholder="Display text" minlength="1">
     <input type="url" class="form-control" placeholder="Link URL">`
     input.setAttribute("class", "input-group link-input")
-    document.getElementById("linksInput").appendChild(input)
+    document.getElementById("linksInput").appendChild(input) // Add the link input to the div
   })
 }
 function removeTag(tag){
-  newTags = newTags.filter(function (element) {
+  newTags = newTags.filter(function (element) { // Remove the tag from the newTags array
     return element !== tag.innerHTML
   })
-  document.getElementById("currentTags").removeChild(tag)
+  document.getElementById("currentTags").removeChild(tag) // Remove the tag button from the div
 }
 
 
-document.getElementById('searchbar').addEventListener('submit', async function (event) {
+document.getElementById('searchbar').addEventListener('submit', async function (event) { // Make the searchbar functional
   event.preventDefault()
   try {
-    let type_ = (sessionStorage.getItem("page") == "users") ? "users" : "products"
+    let type_ = (sessionStorage.getItem("page") == "users") ? "users" : "products" // Default to products search
     let search = document.getElementById('search-input').value
-    loadResults(search, type_, 'name')
-    getTags(type_)
+    loadResults(search, type_, 'name') // Load the search results
+    getTags(type_) // Load the corresponding tags
   } catch (e) {
-    //alert(e)
     console.log(e.name + ": " + e.message)
   }
 })
 
-document.getElementById('login-form').addEventListener("submit", async function (event) {
+document.getElementById('login-form').addEventListener("submit", async function (event) { // Make the login button function
   event.preventDefault()
+  document.getElementById("login-btn").innerHTML = `<div class="spinner-border" role="status" style="height:20px;width:20px;"></div>Logging In`
   let name = document.getElementById("userInput").value
   let password = document.getElementById("passwordInput").value
-  let response = await fetch(`/login?username=${name}&password=${password}`)
-  if (response.ok & response.status != 404){
+  let response = await fetch(`/login?username=${name}&password=${password}`) // GET request a login
+  if (response.ok & response.status != 404){ // If the correct credentials were used log the user in, display their profile
     let userData = await response.json()
     sessionStorage.setItem("loggedIn", "true")
     sessionStorage.setItem("user", JSON.stringify(userData))
     displayProfile()
-  } else if (response.status == 401){
+  } else if (response.status == 401){ // If the incorrect credentials were used display this
     console.log("incorrect password")
     document.getElementById("login-status").innerHTML = `
     <div class="alert alert-danger" role="alert">
       Login Unsuccessful: Incorrect Password
     </div>`
-  } else if (response.status == 404){
+  } else if (response.status == 404){ // If the username inputted does not belong to a user display this
     console.log("not a user")
     document.getElementById("login-status").innerHTML = `
     <div class="alert alert-danger" role="alert">
       Login Unsuccessful: User not found
     </div>`
-  } else {
+  } else { // If there is another error display this
     document.getElementById("login-status").innerHTML = `
     <div class="alert alert-danger" role="alert">
       HTTP Error: ${response.status}
     </div>`
   }
 })
-document.getElementById('signup-btn').addEventListener("click", async function(event) {
+document.getElementById('signup-btn').addEventListener("click", async function(event) { // Make the sign up button lead to the sign up form
   event.preventDefault()
   postUser()
 })
 
-document.getElementById('home-nav').addEventListener("click", async function(event) {
+document.getElementById('home-nav').addEventListener("click", async function(event) { // Home nav goes to products list
   event.preventDefault()
   loadResults("", "products", "name")
   getTags('products')
 })
-document.getElementById('products-nav').addEventListener("click", async function(event) {
+document.getElementById('products-nav').addEventListener("click", async function(event) { // Products nav goes to products list
   event.preventDefault()
   loadResults("", "products", "name")
   getTags('products')
 })
-document.getElementById('users-nav').addEventListener("click", async function(event) {
+document.getElementById('users-nav').addEventListener("click", async function(event) { // Users nav goes to users list
   event.preventDefault()
   loadResults("", "users", "name")
   getTags('users')
 })
-document.getElementById('new-nav').addEventListener("click", async function(event) {
+document.getElementById('new-nav').addEventListener("click", async function(event) { // New nav goes to create product form
   event.preventDefault()
   postProduct()
 })
 
-document.addEventListener('DOMContentLoaded', async function (event) {
+document.addEventListener('DOMContentLoaded', async function (event) { // Actions for when the sit is loaded/reloaded
   console.log('main loaded')
   event.preventDefault()
-  let logged = sessionStorage.getItem("loggedIn")
+  let logged = sessionStorage.getItem("loggedIn") // Check if a user is logged in, if yes then display their profile
   if (logged == "true"){
     displayProfile()
   }
-  let page_ = sessionStorage.getItem("page")
+  let page_ = sessionStorage.getItem("page") // Go to the page that the site was previously on, defaults to product list
   loadPage(page_)
 })
